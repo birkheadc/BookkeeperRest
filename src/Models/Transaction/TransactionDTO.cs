@@ -1,8 +1,8 @@
-namespace BookkeeperRest.Models.Expense;
+namespace BookkeeperRest.Models.Transaction;
 
-[Serializable]
-public record Expense
+public record TransactionDTO
 {
+    public Guid Id { get; init; }
     public DateTime Date { get; init; }
     public string Type { get; init; } = "";
     public long Amount { get; init; }

@@ -1,8 +1,8 @@
-namespace BookkeeperRest.Models.Earning;
+namespace BookkeeperRest.Models.Transaction;
 
-[Serializable]
-public record Earning
+public record Transaction
 {
+    public Guid Id { get; init; }
     public DateTime Date { get; init; }
     public string Type { get; init; } = "";
     public long Amount { get; init; }

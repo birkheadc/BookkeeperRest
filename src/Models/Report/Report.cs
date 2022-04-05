@@ -1,11 +1,8 @@
-namespace BookkeeperRest.Models.Report;
-using BookkeeperRest.Models.Earning;
-using BookkeeperRest.Models.Expense;
+using BookkeeperRest.Models.Transaction;
 
-[Serializable]
-public record Report
+namespace BookkeeperRest.Models.Report;
+
+public class Report
 {
-    public DateTime Date { get; init; }
-    public IEnumerable<EarningDTO> Earnings { get; init; }
-    public IEnumerable<ExpenseDTO> Expenses { get; init; }
+    public IEnumerable<NewTransactionDTO> ?Transactions { get; init; }
 }
