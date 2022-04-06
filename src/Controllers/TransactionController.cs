@@ -1,5 +1,6 @@
 using BookkeeperRest.Filters;
 using BookkeeperRest.Models.Report;
+using BookkeeperRest.Models.Summary;
 using BookkeeperRest.Models.Transaction;
 using BookkeeperRest.Services.TransactionService;
 using Microsoft.AspNetCore.Mvc;
@@ -8,7 +9,7 @@ namespace BookkeeperRest.Controllers;
 
 [ApiController]
 [Route("api/transactions")]
-[PasswordAuth]
+// [PasswordAuth]
 public class TransactionController : ControllerBase
 {
     private readonly ITransactionService service;
@@ -22,6 +23,18 @@ public class TransactionController : ControllerBase
     public IActionResult GetAllTransactionsNewestFirst()
     {
         return Ok(service.GetAllTransactionsNewestFirst());
+    }
+
+    [HttpGet]
+    [Route("summary")]
+    public IActionResult GetSummary([FromQuery(Name = "startDate")] DateTime startDate, [FromQuery(Name = "endDate")] DateTime endDate)
+    {
+        if (startDate > endDate)
+        {
+            return BadRequest("Start date must be less than or equal to end date.");
+        }
+        Summary summary = service.BuildSummary(startDate, endDate);
+        return Ok(summary);
     }
 
     [HttpPost]
