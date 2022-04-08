@@ -9,7 +9,7 @@ namespace BookkeeperRest.Controllers;
 
 [ApiController]
 [Route("api/transactions")]
-// [PasswordAuth]
+[PasswordAuth]
 public class TransactionController : ControllerBase
 {
     private readonly ITransactionService service;
