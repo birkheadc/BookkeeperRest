@@ -41,4 +41,11 @@ public class PasswordController : ControllerBase
 
         return Forbid();
     }
+
+    [HttpPost]
+    [Route("verify")]
+    public IActionResult VerifyPassword()
+    {
+        return Ok();    
+    }
 }
