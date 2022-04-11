@@ -83,7 +83,6 @@ public class TransactionRepository : ITransactionRepository
                 command.CommandText = "INSERT INTO transactions (id, date, type, amount, note) VALUES (@id, @date, @type, @amount, @note)";
 
                 command.Parameters.AddWithValue("@id", transaction.Id.ToString());
-                Console.WriteLine("LOOKFORME: " + transaction.Date.ToString("yyyy-MM-dd"));
                 command.Parameters.AddWithValue("@date", transaction.Date.ToString("yyyy-MM-dd"));
                 command.Parameters.AddWithValue("@type", transaction.Type);
                 command.Parameters.AddWithValue("@amount", transaction.Amount);

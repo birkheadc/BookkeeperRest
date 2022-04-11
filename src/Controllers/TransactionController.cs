@@ -24,19 +24,7 @@ public class TransactionController : ControllerBase
     {
         return Ok(service.GetAllTransactionsNewestFirst());
     }
-
-    // [HttpGet]
-    // [Route("summary")]
-    // public IActionResult GetSummary([FromQuery(Name = "startDate")] DateTime startDate, [FromQuery(Name = "endDate")] DateTime endDate)
-    // {
-    //     if (startDate > endDate)
-    //     {
-    //         return BadRequest("Start date must be less than or equal to end date.");
-    //     }
-    //     Summary summary = service.BuildSummary(startDate, endDate);
-    //     return Ok(summary);
-    // }
-
+    
     [HttpGet]
     [Route("summary")]
     public IActionResult GetSummary([FromQuery(Name = "startDate")] DateTime startDate, [FromQuery(Name = "endDate")] DateTime endDate)

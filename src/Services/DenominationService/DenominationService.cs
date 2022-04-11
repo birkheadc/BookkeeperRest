@@ -1,3 +1,4 @@
+using BookkeeperRest.Models;
 using BookkeeperRest.Repositories;
 
 namespace BookkeeperRest.Services;
@@ -9,5 +10,35 @@ public class DenominationService : IDenominationService
     public DenominationService(IDenominationRepository repository)
     {
         this.repository = repository;
+    }
+
+    public void Add(int value, bool isDefault = false)
+    {
+        Denomination denomination = new()
+        {
+            Value = value,
+            IsDefault = isDefault
+        };
+        repository.Add(denomination);
+    }
+
+    public IEnumerable<Denomination> GetAll()
+    {
+        return repository.GetAll();
+    }
+
+    public void RemoveAll()
+    {
+        repository.RemoveAll();
+    }
+
+    public void RemoveByValue(int value)
+    {
+        repository.RemoveByValue(value);
+    }
+
+    public void UpdateByValue(int value, bool isDefault)
+    {
+        repository.UpdateByValue(value, isDefault);
     }
 }
