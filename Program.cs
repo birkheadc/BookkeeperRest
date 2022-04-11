@@ -4,6 +4,8 @@ using BookkeeperRest.Repositories.TransactionRepository;
 using BookkeeperRest.Services.TransactionService;
 using BookkeeperRest.Services.PasswordService;
 using BookkeeperRest.Models.Transaction;
+using BookkeeperRest.Services;
+using BookkeeperRest.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,6 +17,11 @@ builder.Services.AddSingleton<IPasswordHasher, PasswordHasher>();
 builder.Services.AddSingleton<ITransactionService, TransactionService>();
 builder.Services.AddSingleton<ITransactionRepository, TransactionRepository>();
 builder.Services.AddSingleton<ITransactionConverter, TransactionConverter>();
+builder.Services.AddSingleton<IDenominationService, DenominationService>();
+builder.Services.AddSingleton<IDenominationRepository, DenominationRepository>();
+builder.Services.AddSingleton<ITransactionTypeRepository, TransactionTypeRepository>();
+builder.Services.AddSingleton<ITransactionTypeService, TransactionTypeService>();
+
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace BookkeeperRest.Controllers;
 
 [ApiController]
-[Route("api/transactions")]
+[Route("transactions")]
 [PasswordAuth]
 public class TransactionController : ControllerBase
 {

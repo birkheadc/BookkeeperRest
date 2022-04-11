@@ -7,7 +7,7 @@ using Org.BouncyCastle.OpenSsl;
 namespace BookkeeperRest.Controllers;
 
 [ApiController]
-[Route("api/password")]
+[Route("password")]
 [PasswordAuth]
 public class PasswordController : ControllerBase
 {
