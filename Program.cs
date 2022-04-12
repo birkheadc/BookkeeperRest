@@ -21,6 +21,9 @@ builder.Services.AddSingleton<IDenominationService, DenominationService>();
 builder.Services.AddSingleton<IDenominationRepository, DenominationRepository>();
 builder.Services.AddSingleton<ITransactionTypeRepository, TransactionTypeRepository>();
 builder.Services.AddSingleton<ITransactionTypeService, TransactionTypeService>();
+builder.Services.AddSingleton<ISettingRepository, SettingRepository>();
+builder.Services.AddSingleton<ISettingService, SettingService>();
+
 
 
 builder.Services.AddControllers();
