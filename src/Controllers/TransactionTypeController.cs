@@ -26,6 +26,10 @@ public class TransactionTypeController : ControllerBase
             service.Add(type);
             return Ok();
         }
+        catch(DuplicateEntryException)
+        {
+            return Conflict();
+        }
         catch
         {
             return BadRequest();
@@ -42,6 +46,35 @@ public class TransactionTypeController : ControllerBase
         catch
         {
             return NotFound();
+        }
+    }
+
+    [HttpDelete]
+    public IActionResult DeleteAll()
+    {
+        try
+        {
+            service.RemoveAll();
+            return Ok();
+        }
+        catch
+        {
+            return BadRequest();
+        }
+    }
+
+    [HttpDelete]
+    [Route("{name}")]
+    public IActionResult DeleteByName(string name)
+    {
+        try
+        {
+            service.RemoveByName(name);
+            return Ok();
+        }
+        catch
+        {
+            return BadRequest();
         }
     }
 }

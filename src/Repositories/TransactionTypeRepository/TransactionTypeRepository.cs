@@ -67,7 +67,12 @@ public class TransactionTypeRepository : ITransactionTypeRepository
 
     public void Add(TransactionType type)
     {
-        Console.WriteLine("Attempting to add: " + type);
+
+        if (DoesExistByName(type.Name) == true)
+        {
+            throw new DuplicateEntryException();
+        }
+
         using (MySqlConnection connection = GetConnection())
         {
             connection.Open();
@@ -81,13 +86,34 @@ public class TransactionTypeRepository : ITransactionTypeRepository
             if (type.IsDefault == true) {
                 isDefaultInt = 1;
             }
-            command.Parameters.AddWithValue("@isDefault", isDefaultInt.ToString());
+            command.Parameters.AddWithValue("@isDefault", isDefaultInt);
             command.Parameters.AddWithValue("@polarity", type.Polarity);
-            Console.WriteLine("here");
+            Console.WriteLine(type);
             command.ExecuteNonQuery();
             
 
             connection.Close();
+        }
+    }
+
+    public bool DoesExistByName(string name)
+    {
+        using (MySqlConnection connection = GetConnection())
+        {
+            connection.Open();
+
+            MySqlCommand command = new();
+            command.Connection = connection;
+            command.CommandText = "SELECT * FROM transactiontypes WHERE name = @name";
+            command.Parameters.AddWithValue("@name", name);
+
+            if (command.ExecuteScalar() == null)
+            {
+                connection.Close();
+                return false;
+            }
+            connection.Close();
+            return true;
         }
     }
 
@@ -137,7 +163,19 @@ public class TransactionTypeRepository : ITransactionTypeRepository
 
     public void RemoveByName(string name)
     {
-        throw new NotImplementedException();
+        using (MySqlConnection connection = GetConnection())
+        {
+            connection.Open();
+
+            MySqlCommand command = new();
+            command.Connection = connection;
+            command.CommandText = "DELETE FROM transactiontypes WHERE name = @name";
+            command.Parameters.AddWithValue("@name", name);
+
+            command.ExecuteNonQuery();
+
+            connection.Close();
+        }
     }
 
     public void UpdateByName(string name, bool isDefault)

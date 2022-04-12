@@ -19,6 +19,11 @@ public class DenominationService : IDenominationService
             Value = value,
             IsDefault = isDefault
         };
+        Add(denomination);
+    }
+
+    public void Add(Denomination denomination)
+    {
         repository.Add(denomination);
     }
 

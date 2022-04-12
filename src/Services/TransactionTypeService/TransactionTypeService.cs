@@ -34,16 +34,16 @@ public class TransactionTypeService : ITransactionTypeService
 
     public void RemoveAll()
     {
-        throw new NotImplementedException();
+        repository.RemoveAll();
     }
 
     public void RemoveByName(string name)
     {
-        throw new NotImplementedException();
+        repository.RemoveByName(name);
     }
 
     public void UpdateByName(string name, bool isDefault)
     {
-        throw new NotImplementedException();
+        repository.UpdateByName(name, isDefault);
     }
 }

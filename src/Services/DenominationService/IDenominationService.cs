@@ -8,5 +8,6 @@ public interface IDenominationService
     public void RemoveByValue(int value);
     public void UpdateByValue(int value, bool isDefault);
     public void Add(int value, bool isDefault = false);
+    public void Add(Denomination denomination);
     public IEnumerable<Denomination> GetAll();
 }
