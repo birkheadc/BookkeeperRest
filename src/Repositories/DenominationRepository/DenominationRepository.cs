@@ -24,10 +24,7 @@ public class DenominationRepository : CrudRepositoryBase, IDenominationRepositor
             command.CommandText = "INSERT INTO denominations (value, isDefault) VALUES (@value, @isDefault)";
 
             command.Parameters.AddWithValue("@value", denomination.Value);
-            int isDefaultInt = 0;
-            if (denomination.IsDefault == true) {
-                isDefaultInt = 1;
-            }
+            int isDefaultInt = denomination.IsDefault ? 1 : 0;
             command.Parameters.AddWithValue("@isDefault", isDefaultInt);
             command.ExecuteNonQuery();
             
@@ -119,6 +116,20 @@ public class DenominationRepository : CrudRepositoryBase, IDenominationRepositor
 
     public void UpdateByValue(int value, bool isDefault)
     {
-        throw new NotImplementedException();
+        using (MySqlConnection connection = GetConnection())
+        {
+            connection.Open();
+
+            MySqlCommand command = new();
+            command.Connection = connection;
+            command.CommandText = "UPDATE denominations SET isDefault = @isDefault WHERE value = @value";
+            int isDefaultInt = isDefault ? 1 : 0;
+            command.Parameters.AddWithValue("@value", value);
+            command.Parameters.AddWithValue("@isDefault", isDefaultInt);
+
+            command.ExecuteNonQuery();
+
+            connection.Close();
+        }
     }
 }

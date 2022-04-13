@@ -14,7 +14,7 @@ public class SettingRepository : CrudRepositoryBase, ISettingRepository
 
             MySqlCommand command = new();
             command.Connection = connection;
-            command.CommandText = "INSERT INTO setting (key_string, value_string) VALUES (@key, @value)";
+            command.CommandText = "INSERT INTO settings (key_string, value_string) VALUES (@key, @value)";
             command.Parameters.AddWithValue("@key", setting.Key);
             command.Parameters.AddWithValue("@value", setting.Value);
 
@@ -32,7 +32,7 @@ public class SettingRepository : CrudRepositoryBase, ISettingRepository
 
             MySqlCommand command = new();
             command.Connection = connection;
-            command.CommandText = "DELETE FROM setting WHERE key_string = @key";
+            command.CommandText = "DELETE FROM settings WHERE key_string = @key";
             command.Parameters.AddWithValue("@key", key);
             command.ExecuteNonQuery();
             
@@ -50,7 +50,7 @@ public class SettingRepository : CrudRepositoryBase, ISettingRepository
 
             MySqlCommand command = new();
             command.Connection = connection;
-            command.CommandText = "SELECT * FROM setting";
+            command.CommandText = "SELECT * FROM settings";
             
             using (MySqlDataReader reader = command.ExecuteReader())
             {
@@ -86,7 +86,7 @@ public class SettingRepository : CrudRepositoryBase, ISettingRepository
             MySqlCommand command = new();
 
             command.Connection = connection;
-            command.CommandText = "UPDATE setting SET value_string = @value WHERE key_string = @key";
+            command.CommandText = "UPDATE settings SET value_string = @value WHERE key_string = @key";
             command.Parameters.AddWithValue("@key", key);
             command.Parameters.AddWithValue("@value", value);
 

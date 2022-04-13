@@ -46,7 +46,7 @@ public class TransactionTypeRepository : CrudRepositoryBase, ITransactionTypeRep
 
             MySqlCommand command = new();
             command.Connection = connection;
-            command.CommandText = "SELECT * FROM transactiontypes WHERE name = @name";
+            command.CommandText = "SELECT * FROM transaction_types WHERE name = @name";
             command.Parameters.AddWithValue("@name", name);
 
             if (command.ExecuteScalar() == null)
@@ -69,7 +69,7 @@ public class TransactionTypeRepository : CrudRepositoryBase, ITransactionTypeRep
 
             MySqlCommand command = new();
             command.Connection = connection;
-            command.CommandText = "SELECT * FROM transactiontypes";
+            command.CommandText = "SELECT * FROM transaction_types";
 
             using (MySqlDataReader reader = command.ExecuteReader())
             {
@@ -111,7 +111,7 @@ public class TransactionTypeRepository : CrudRepositoryBase, ITransactionTypeRep
 
             MySqlCommand command = new();
             command.Connection = connection;
-            command.CommandText = "DELETE FROM transactiontypes WHERE name = @name";
+            command.CommandText = "DELETE FROM transaction_types WHERE name = @name";
             command.Parameters.AddWithValue("@name", name);
 
             command.ExecuteNonQuery();
@@ -122,6 +122,19 @@ public class TransactionTypeRepository : CrudRepositoryBase, ITransactionTypeRep
 
     public void UpdateByName(string name, bool isDefault)
     {
-        throw new NotImplementedException();
+        using (MySqlConnection connection = GetConnection())
+        {
+            connection.Open();
+
+            MySqlCommand command = new();
+            command.Connection = connection;
+            command.CommandText = "UPDATE transaction_types SET isDefault = @isDefault WHERE name = @name";
+            int isDefaultInt = isDefault ? 1 : 0;
+            command.Parameters.AddWithValue("@isDefault", isDefaultInt);
+            command.Parameters.AddWithValue("@name", name);
+            command.ExecuteNonQuery();
+
+            connection.Close();
+        }
     }
 }
