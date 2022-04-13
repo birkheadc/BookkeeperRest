@@ -35,8 +35,8 @@ public class SettingRepository : CrudRepositoryBase, ISettingRepository
             command.CommandText = "DELETE FROM setting WHERE key_string = @key";
             command.Parameters.AddWithValue("@key", key);
             command.ExecuteNonQuery();
-
-            connection.Close();
+            
+            connection.Close();          
         }
     }
 

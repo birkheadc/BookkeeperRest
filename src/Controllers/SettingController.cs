@@ -43,4 +43,33 @@ public class SettingController : ControllerBase
             return BadRequest();
         }
     }
+
+    [HttpDelete]
+    [Route("{key}")]
+    public IActionResult DeleteByKey([FromRoute] string key)
+    {
+        try
+        {
+            service.DeleteByKey(key);
+            return Ok();
+        }
+        catch
+        {
+            return BadRequest();
+        }
+    }
+
+    [HttpPut]
+    public IActionResult UpdateByKey([FromBody] Setting setting)
+    {
+        try
+        {
+            service.UpdateByKey(setting.Key, setting.Value);
+            return Ok();
+        }
+        catch
+        {
+            return BadRequest();
+        }
+    }
 }
