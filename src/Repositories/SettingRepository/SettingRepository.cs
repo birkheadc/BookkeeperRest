@@ -5,7 +5,7 @@ namespace BookkeeperRest.Repositories;
 
 public class SettingRepository : CrudRepositoryBase, ISettingRepository
 {
-    public SettingRepository(IConfiguration configuration) : base(configuration, "setting", "CREATE TABLE setting ( key_string VARCHAR(255) DEFAULT '__' NOT NULL PRIMARY KEY, value_string VARCHAR(255) DEFAULT '__' NOT NULL )") {}
+    public SettingRepository(IConfiguration configuration) : base(configuration, "settings", "CREATE TABLE settings ( key_string VARCHAR(255) DEFAULT '__' NOT NULL PRIMARY KEY, value_string VARCHAR(255) DEFAULT '__' NOT NULL )") {}
     public void Add(Setting setting)
     {
         using (MySqlConnection connection = GetConnection())
@@ -79,6 +79,20 @@ public class SettingRepository : CrudRepositoryBase, ISettingRepository
 
     public void UpdateByKey(string key, string value)
     {
-        throw new NotImplementedException();
+        using (MySqlConnection connection = GetConnection())
+        {
+            connection.Open();
+
+            MySqlCommand command = new();
+
+            command.Connection = connection;
+            command.CommandText = "UPDATE setting SET value_string = @value WHERE key_string = @key";
+            command.Parameters.AddWithValue("@key", key);
+            command.Parameters.AddWithValue("@value", value);
+
+            command.ExecuteNonQuery();
+
+            connection.Close();
+        }
     }
 }

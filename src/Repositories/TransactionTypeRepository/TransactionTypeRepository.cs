@@ -3,67 +3,9 @@ using MySql.Data.MySqlClient;
 
 namespace BookkeeperRest.Repositories;
 
-public class TransactionTypeRepository : ITransactionTypeRepository
+public class TransactionTypeRepository : CrudRepositoryBase, ITransactionTypeRepository
 {
-    private string connectionString;
-
-    public TransactionTypeRepository(IConfiguration configuration)
-    {
-        connectionString = configuration.GetConnectionString("DefaultConnection");
-        InitializeDatabase();
-    }
-
-    private void InitializeDatabase()
-    {
-        if (DoesTableExist() == false)
-        {
-            CreateTable();
-        }
-    }
-
-    private MySqlConnection GetConnection()
-    {
-        MySqlConnection connection = new(connectionString);
-        return connection;
-    }
-
-    private bool DoesTableExist()
-    {
-        using (MySqlConnection connection = GetConnection())
-        {
-            MySqlCommand command = new();
-
-            command.CommandText = "SELECT COUNT(*) FROM information_schema.TABLES WHERE (TABLE_SCHEMA='bookkeeper') AND (TABLE_NAME='transactiontypes')";
-
-            command.Connection = connection;
-
-            connection.Open();
-
-            int n = GetCountFromScalarCommand(command);
-            return n > 0;
-        }
-    }
-
-    private int GetCountFromScalarCommand(MySqlCommand command)
-    {
-        return int.Parse(command.ExecuteScalar().ToString() ?? "0");
-    }
-
-    private void CreateTable()
-    {
-        using (MySqlConnection connection = GetConnection())
-        {
-            MySqlCommand command = new();
-            
-            command.CommandText = "CREATE TABLE transactiontypes ( name VARCHAR(255) DEFAULT 'default' NOT NULL PRIMARY KEY, polarity TINYINT DEFAULT 1 NOT NULL, isDefault BOOL DEFAULT 0 NOT NULL);";
-            
-            command.Connection = connection;
-            
-            connection.Open();
-            
-            command.ExecuteNonQuery();
-        }
-    }
+    public TransactionTypeRepository(IConfiguration configuration) : base(configuration, "transaction_types", "CREATE TABLE transaction_types ( name VARCHAR(255) DEFAULT 'default' NOT NULL PRIMARY KEY, polarity TINYINT DEFAULT 1 NOT NULL, isDefault BOOL DEFAULT 0 NOT NULL)") {}
 
     public void Add(TransactionType type)
     {
@@ -79,7 +21,7 @@ public class TransactionTypeRepository : ITransactionTypeRepository
 
             MySqlCommand command = new();
             command.Connection = connection;
-            command.CommandText = "INSERT INTO transactiontypes (name, polarity, isDefault) VALUES (@name, @polarity, @isDefault)";
+            command.CommandText = "INSERT INTO transaction_types (name, polarity, isDefault) VALUES (@name, @polarity, @isDefault)";
 
             command.Parameters.AddWithValue("@name", type.Name);
             int isDefaultInt = 0;
