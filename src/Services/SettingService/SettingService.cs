@@ -1,5 +1,7 @@
+using System.Net.Mime;
 using BookkeeperRest.Models;
 using BookkeeperRest.Repositories;
+using System.Text.Json;
 
 namespace BookkeeperRest.Services;
 
@@ -32,9 +34,22 @@ public class SettingService : ISettingService
         repository.DeleteByKey(key);
     }
 
-    public IEnumerable<Setting> GetAll()
+    public string GetAll()
     {
-        return repository.GetAll();
+        IEnumerable<Setting> settings = repository.GetAll();
+        string json = ConvertSettingsToJsonString(settings);
+        return json;
+    }
+
+    private string ConvertSettingsToJsonString(IEnumerable<Setting> settings)
+    {
+        Dictionary<string, string> pairs = new();
+        foreach (Setting setting in settings)
+        {
+            pairs.Add(setting.Key, setting.Value);
+        }
+        string json = JsonSerializer.Serialize(pairs);
+        return json;
     }
 
     public void UpdateByKey(string key, string value)

@@ -30,7 +30,6 @@ public class TransactionTypeRepository : CrudRepositoryBase, ITransactionTypeRep
             }
             command.Parameters.AddWithValue("@isDefault", isDefaultInt);
             command.Parameters.AddWithValue("@polarity", type.Polarity);
-            Console.WriteLine(type);
             command.ExecuteNonQuery();
             
 
