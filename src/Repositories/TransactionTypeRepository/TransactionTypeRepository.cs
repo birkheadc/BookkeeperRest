@@ -9,7 +9,6 @@ public class TransactionTypeRepository : CrudRepositoryBase, ITransactionTypeRep
 
     public void Add(TransactionType type)
     {
-
         if (DoesExistByName(type.Name) == true)
         {
             throw new DuplicateEntryException();

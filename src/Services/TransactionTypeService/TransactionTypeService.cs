@@ -24,7 +24,22 @@ public class TransactionTypeService : ITransactionTypeService
 
     public void Add(TransactionType type)
     {
+        if (IsNameValid(type.Name) == false) {
+            throw new ArgumentException();
+        }
         repository.Add(type);
+    }
+
+    private bool IsNameValid(string name) {
+        foreach (char c in name) {
+            if (Char.IsLetter(c)) {
+                continue;
+            }
+            if (c != '_' && c != ' ' && c != '-') {
+                return false;
+            }
+        }
+        return true;
     }
 
     public IEnumerable<TransactionType> GetAll()
