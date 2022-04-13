@@ -91,7 +91,7 @@ public class TransactionTypeRepository : CrudRepositoryBase, ITransactionTypeRep
         {
             Name = reader["name"].ToString() ?? "",
             Polarity = Int16.Parse(reader["polarity"].ToString() ?? "1"),
-            IsDefault = reader["isDefault"].ToString() == "1"
+            IsDefault = Boolean.Parse(reader["isDefault"].ToString() ?? "false")
         };
 
         return type;

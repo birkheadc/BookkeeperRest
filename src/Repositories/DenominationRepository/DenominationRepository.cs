@@ -86,7 +86,7 @@ public class DenominationRepository : CrudRepositoryBase, IDenominationRepositor
         Denomination denomination = new()
         {
             Value = Int32.Parse(reader["value"].ToString() ?? "1"),
-            IsDefault = reader["isDefault"].ToString() == "1"
+            IsDefault = Boolean.Parse(reader["isDefault"].ToString() ?? "false")
         };
 
         return denomination;
