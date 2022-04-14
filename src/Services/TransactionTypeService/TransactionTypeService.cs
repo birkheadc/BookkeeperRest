@@ -16,6 +16,7 @@ public class TransactionTypeService : ITransactionTypeService
     {
         TransactionType type = new()
         {
+            Console.WriteLine("Hi");
             Name = name,
             IsDefault = isDefault
         };
