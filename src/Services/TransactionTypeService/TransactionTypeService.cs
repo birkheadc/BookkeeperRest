@@ -1,4 +1,5 @@
 using BookkeeperRest.Models;
+using BookkeeperRest.Models.Transaction;
 using BookkeeperRest.Repositories;
 
 namespace BookkeeperRest.Services;
@@ -6,18 +7,22 @@ namespace BookkeeperRest.Services;
 public class TransactionTypeService : ITransactionTypeService
 {
     private ITransactionTypeRepository repository;
+    private ITransactionConverter converter;
 
-    public TransactionTypeService(ITransactionTypeRepository repository)
+    public TransactionTypeService(ITransactionTypeRepository repository, ITransactionConverter converter)
     {
         this.repository = repository;
+        this.converter = converter;
     }
 
     public void Add(string name, bool isDefault = false)
     {
-        Console.WriteLine("Hi");
+        if (IsNameValid(name) == false) {
+            throw new ArgumentException();
+        }
         TransactionType type = new()
         {
-            Name = name,
+            Name = ConvertName(name),
             IsDefault = isDefault
         };
         Add(type);
@@ -28,19 +33,24 @@ public class TransactionTypeService : ITransactionTypeService
         if (IsNameValid(type.Name) == false) {
             throw new ArgumentException();
         }
-        repository.Add(type);
+        repository.Add(ConvertTransactionTypeName(type));
+    }
+
+    public void Add(IEnumerable<TransactionType> types) {
+        foreach (TransactionType type in types) {
+            if (IsNameValid(type.Name) == false) {
+                throw new ArgumentException();
+            }
+        }
+        List<TransactionType> newTypes = new();
+        foreach (TransactionType type in types) {
+            newTypes.Add(ConvertTransactionTypeName(type));
+        }
+        repository.Add(newTypes);
     }
 
     private bool IsNameValid(string name) {
-        foreach (char c in name) {
-            if (Char.IsLetter(c)) {
-                continue;
-            }
-            if (c != '_' && c != ' ' && c != '-') {
-                return false;
-            }
-        }
-        return true;
+        return converter.IsNameValid(name);
     }
 
     public IEnumerable<TransactionType> GetAll()
@@ -61,5 +71,22 @@ public class TransactionTypeService : ITransactionTypeService
     public void UpdateByName(string name, bool isDefault)
     {
         repository.UpdateByName(name, isDefault);
+    }
+
+    private string ConvertName(string name)
+    {
+        return converter.ConvertName(name);
+    }
+
+    private TransactionType ConvertTransactionTypeName(TransactionType type)
+    {
+        string newName = ConvertName(type.Name);
+        TransactionType newType = new()
+        {
+            Name = newName,
+            Polarity = type.Polarity,
+            IsDefault = type.IsDefault
+        };
+        return newType;
     }
 }

@@ -10,5 +10,6 @@ public interface ITransactionTypeService
     public void UpdateByName(string name, bool isDefault);
     public void Add(string name, bool isDefault = false);
     public void Add(TransactionType type);
+    public void Add(IEnumerable<TransactionType> types);
     public IEnumerable<TransactionType> GetAll();
 }

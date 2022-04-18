@@ -9,5 +9,6 @@ public interface IDenominationService
     public void UpdateByValue(int value, bool isDefault);
     public void Add(int value, bool isDefault = false);
     public void Add(Denomination denomination);
+    public void Add(IEnumerable<Denomination> denominations);
     public IEnumerable<Denomination> GetAll();
 }

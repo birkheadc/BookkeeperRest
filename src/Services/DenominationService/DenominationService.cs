@@ -27,6 +27,11 @@ public class DenominationService : IDenominationService
         repository.Add(denomination);
     }
 
+    public void Add(IEnumerable<Denomination> denominations)
+    {
+        repository.Add(denominations);
+    }
+
     public IEnumerable<Denomination> GetAll()
     {
         return repository.GetAll();

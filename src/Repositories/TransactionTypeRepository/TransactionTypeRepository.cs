@@ -135,4 +135,31 @@ public class TransactionTypeRepository : CrudRepositoryBase, ITransactionTypeRep
             connection.Close();
         }
     }
+
+    public void Add(IEnumerable<TransactionType> types)
+    {
+        using (MySqlConnection connection = GetConnection())
+        {
+            connection.Open();
+
+            foreach (TransactionType type in types) {
+                if (DoesExistByName(type.Name) == true)
+                {
+                    continue;
+                }
+
+                MySqlCommand command = new();
+                command.Connection = connection;
+                command.CommandText = "INSERT INTO transaction_types (name, polarity, isDefault) VALUES (@name, @polarity, @isDefault)";
+
+                command.Parameters.AddWithValue("@name", type.Name);
+                int isDefaultInt = type.IsDefault ? 1 : 0;
+                command.Parameters.AddWithValue("@isDefault", isDefaultInt);
+                command.Parameters.AddWithValue("@polarity", type.Polarity);
+                command.ExecuteNonQuery();
+            }            
+
+            connection.Close();
+        }   
+    }
 }

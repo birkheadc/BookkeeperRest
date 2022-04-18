@@ -132,4 +132,30 @@ public class DenominationRepository : CrudRepositoryBase, IDenominationRepositor
             connection.Close();
         }
     }
+
+    public void Add(IEnumerable<Denomination> denominations)
+    {
+        using (MySqlConnection connection = GetConnection())
+        {
+            connection.Open();
+
+            foreach(Denomination denomination in denominations) {
+                if (DoesExistByValue(denomination.Value) == true)
+                {
+                    continue;
+                }
+
+                MySqlCommand command = new();
+                command.Connection = connection;
+                command.CommandText = "INSERT INTO denominations (value, isDefault) VALUES (@value, @isDefault)";
+
+                command.Parameters.AddWithValue("@value", denomination.Value);
+                int isDefaultInt = denomination.IsDefault ? 1 : 0;
+                command.Parameters.AddWithValue("@isDefault", isDefaultInt);
+                command.ExecuteNonQuery();
+            }        
+
+            connection.Close();
+        }
+    }
 }

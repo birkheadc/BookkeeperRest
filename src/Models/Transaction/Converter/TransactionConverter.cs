@@ -50,11 +50,15 @@ public class TransactionConverter : ITransactionConverter
 
     public Transaction ToEntity(NewTransactionDTO dto)
     {
+        if (IsNameValid(dto.Type) == false)
+        {
+            throw new ArgumentException();
+        }
         Transaction transaction = new()
         {
             Id = Guid.NewGuid(),
             Date = dto.Date,
-            Type = dto.Type,
+            Type = ConvertName(dto.Type),
             Amount = dto.Amount,
             Note = dto.Note
         };
@@ -69,5 +73,24 @@ public class TransactionConverter : ITransactionConverter
             entities.Add(ToEntity(dto));
         }
         return entities;
+    }
+
+    public bool IsNameValid(string name) {
+        foreach (char c in name) {
+            if (Char.IsLetter(c)) {
+                continue;
+            }
+            if (c != '_' && c != ' ' && c != '-') {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public string ConvertName(string name)
+    {
+        string newName = name.Replace(' ', '_');
+        newName = newName.ToLower();
+        return newName;
     }
 }

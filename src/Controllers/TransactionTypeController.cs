@@ -19,16 +19,12 @@ public class TransactionTypeController : ControllerBase
     }
 
     [HttpPost]
-    public IActionResult AddNew([FromBody] TransactionType type)
+    public IActionResult AddNew([FromBody] TransactionType[] types)
     {
         try
         {
-            service.Add(type);
+            service.Add(types);
             return Ok();
-        }
-        catch(DuplicateEntryException)
-        {
-            return Conflict();
         }
         catch
         {

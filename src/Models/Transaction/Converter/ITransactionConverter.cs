@@ -8,6 +8,8 @@ public interface ITransactionConverter
     public IEnumerable<Transaction> ToEntity(IEnumerable<TransactionDTO> dtos);
     public Transaction ToEntity(NewTransactionDTO dto);
     public IEnumerable<Transaction> ToEntity(IEnumerable<NewTransactionDTO> dtos);
+    public bool IsNameValid(string name);
+    public string ConvertName(string name);
 
 
 }
