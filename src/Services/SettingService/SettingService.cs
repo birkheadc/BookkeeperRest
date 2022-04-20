@@ -56,4 +56,20 @@ public class SettingService : ISettingService
     {
         repository.UpdateByKey(key, value);
     }
+
+    public void UpdateSettings(JsonElement settingObject)
+    {
+        JsonElement.ObjectEnumerator obj = settingObject.EnumerateObject();
+        List<Setting> settings = new();
+        foreach (var o in obj)
+        {
+            Setting setting = new()
+            {
+                Key = o.Name,
+                Value = o.Value.ToString()
+            };
+            settings.Add(setting);
+        }
+        repository.UpdateAll(settings);
+    }
 }

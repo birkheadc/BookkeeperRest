@@ -114,7 +114,7 @@ public class DenominationRepository : CrudRepositoryBase, IDenominationRepositor
         }   
     }
 
-    public void UpdateByValue(int value, bool isDefault)
+    public void Update(Denomination denomination)
     {
         using (MySqlConnection connection = GetConnection())
         {
@@ -123,8 +123,8 @@ public class DenominationRepository : CrudRepositoryBase, IDenominationRepositor
             MySqlCommand command = new();
             command.Connection = connection;
             command.CommandText = "UPDATE denominations SET isDefault = @isDefault WHERE value = @value";
-            int isDefaultInt = isDefault ? 1 : 0;
-            command.Parameters.AddWithValue("@value", value);
+            int isDefaultInt = denomination.IsDefault ? 1 : 0;
+            command.Parameters.AddWithValue("@value", denomination.Value);
             command.Parameters.AddWithValue("@isDefault", isDefaultInt);
 
             command.ExecuteNonQuery();
@@ -142,6 +142,7 @@ public class DenominationRepository : CrudRepositoryBase, IDenominationRepositor
             foreach(Denomination denomination in denominations) {
                 if (DoesExistByValue(denomination.Value) == true)
                 {
+                    Update(denomination);
                     continue;
                 }
 

@@ -1,3 +1,4 @@
+using System.Text.Json;
 using BookkeeperRest.Filters;
 using BookkeeperRest.Models;
 using BookkeeperRest.Services;
@@ -60,11 +61,11 @@ public class SettingController : ControllerBase
     }
 
     [HttpPut]
-    public IActionResult UpdateByKey([FromBody] Setting setting)
+    public IActionResult UpdateSettings([FromBody] JsonElement settings)
     {
         try
         {
-            service.UpdateByKey(setting.Key, setting.Value);
+            service.UpdateSettings(settings);
             return Ok();
         }
         catch

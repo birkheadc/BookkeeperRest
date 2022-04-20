@@ -18,16 +18,12 @@ public class DenominationController : ControllerBase
     }
 
     [HttpPost]
-    public IActionResult AddNew([FromBody] Denomination[] denominations)
+    public IActionResult AddOrUpdate([FromBody] Denomination[] denominations)
     {
         try
         {
             service.Add(denominations);
             return Ok();
-        }
-        catch(DuplicateEntryException)
-        {
-            return Conflict();
         }
         catch
         {

@@ -118,7 +118,7 @@ public class TransactionTypeRepository : CrudRepositoryBase, ITransactionTypeRep
         }
     }
 
-    public void UpdateByName(string name, bool isDefault)
+    public void Update(TransactionType transactionType)
     {
         using (MySqlConnection connection = GetConnection())
         {
@@ -126,10 +126,11 @@ public class TransactionTypeRepository : CrudRepositoryBase, ITransactionTypeRep
 
             MySqlCommand command = new();
             command.Connection = connection;
-            command.CommandText = "UPDATE transaction_types SET isDefault = @isDefault WHERE name = @name";
-            int isDefaultInt = isDefault ? 1 : 0;
+            command.CommandText = "UPDATE transaction_types SET polarity = @polarity , isDefault = @isDefault WHERE name = @name";
+            int isDefaultInt = transactionType.IsDefault ? 1 : 0;
             command.Parameters.AddWithValue("@isDefault", isDefaultInt);
-            command.Parameters.AddWithValue("@name", name);
+            command.Parameters.AddWithValue("@name", transactionType.Name);
+            command.Parameters.AddWithValue("@polarity", transactionType.Polarity);
             command.ExecuteNonQuery();
 
             connection.Close();
@@ -145,6 +146,7 @@ public class TransactionTypeRepository : CrudRepositoryBase, ITransactionTypeRep
             foreach (TransactionType type in types) {
                 if (DoesExistByName(type.Name) == true)
                 {
+                    Update(type);
                     continue;
                 }
 

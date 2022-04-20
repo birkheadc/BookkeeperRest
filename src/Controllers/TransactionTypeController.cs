@@ -73,4 +73,18 @@ public class TransactionTypeController : ControllerBase
             return BadRequest();
         }
     }
+
+    [HttpPut]
+    public IActionResult AddOrUpdate([FromBody] TransactionType transactionType)
+    {
+        try
+        {
+            service.Update(transactionType);
+            return Ok();
+        }
+        catch
+        {
+            return BadRequest();
+        }
+    }
 }

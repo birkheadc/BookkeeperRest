@@ -8,4 +8,5 @@ public interface ISettingRepository
     public void Add(Setting setting);
     public void UpdateByKey(string key, string value);
     public void DeleteByKey(string key);
+    public void UpdateAll(IEnumerable<Setting> settings);
 }

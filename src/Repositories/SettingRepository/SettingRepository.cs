@@ -95,4 +95,25 @@ public class SettingRepository : CrudRepositoryBase, ISettingRepository
             connection.Close();
         }
     }
+
+    public void UpdateAll(IEnumerable<Setting> settings)
+    {
+        using (MySqlConnection connection = GetConnection())
+        {
+            connection.Open();
+
+            foreach (Setting setting in settings)
+            {
+                MySqlCommand command = new();
+                command.Connection = connection;
+                command.CommandText = "UPDATE settings SET value_string = @value WHERE key_string = @key";
+                command.Parameters.AddWithValue("@key", setting.Key);
+                command.Parameters.AddWithValue("@value", setting.Value);
+
+                command.ExecuteNonQuery();
+            }
+
+            connection.Close();
+        }
+    }
 }

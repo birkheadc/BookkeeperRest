@@ -47,8 +47,8 @@ public class DenominationService : IDenominationService
         repository.RemoveByValue(value);
     }
 
-    public void UpdateByValue(int value, bool isDefault)
+    public void Update(Denomination denomination)
     {
-        repository.UpdateByValue(value, isDefault);
+        repository.Update(denomination);
     }
 }

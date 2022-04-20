@@ -6,7 +6,7 @@ public interface ITransactionTypeRepository
 {
     public void RemoveAll();
     public void RemoveByName(string name);
-    public void UpdateByName(string name, bool isDefault);
+    public void Update(TransactionType transactionType);
     public void Add(TransactionType denomination);
     public void Add(IEnumerable<TransactionType> types);
     public IEnumerable<TransactionType> GetAll();

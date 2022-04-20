@@ -68,9 +68,9 @@ public class TransactionTypeService : ITransactionTypeService
         repository.RemoveByName(name);
     }
 
-    public void UpdateByName(string name, bool isDefault)
+    public void Update(TransactionType transactionType)
     {
-        repository.UpdateByName(name, isDefault);
+        repository.Update(transactionType);
     }
 
     private string ConvertName(string name)

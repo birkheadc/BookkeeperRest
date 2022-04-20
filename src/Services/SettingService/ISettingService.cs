@@ -1,3 +1,4 @@
+using System.Text.Json;
 using BookkeeperRest.Models;
 
 namespace BookkeeperRest.Services;
@@ -9,4 +10,5 @@ public interface ISettingService
     public void Add(Setting setting);
     public void UpdateByKey(string key, string value);
     public void DeleteByKey(string key);
+    public void UpdateSettings(JsonElement settings);
 }
