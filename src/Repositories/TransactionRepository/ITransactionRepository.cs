@@ -8,4 +8,5 @@ public interface ITransactionRepository
     public void Add(IEnumerable<Transaction> transactions);
     public IEnumerable<Transaction> FindAllOrderByDateDesc();
     public IEnumerable<Transaction> FindByDate(DateTime date);
+    public IEnumerable<Transaction> FindBetweenDates(DateTime startDate, DateTime endDate);
 }

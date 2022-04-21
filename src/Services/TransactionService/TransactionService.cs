@@ -21,28 +21,23 @@ public class TransactionService : ITransactionService
         long gross = 0;
         long net = 0;
 
+        List<Transaction> transactions = new();
+        transactions.AddRange(repository.FindBetweenDates(startDate, endDate));
+
         List<Transaction> posTransactions = new();
         List<Transaction> negTransactions = new();
 
-        TimeSpan span = endDate.Subtract(startDate);
-        int days = (int)Math.Floor(span.TotalDays);
 
-        for (int i = 0; i <= days; i++)
+        foreach (Transaction transaction in transactions)
         {
-            List<Transaction> transactions = new();
-            transactions.AddRange(repository.FindByDate(startDate.AddDays(i)));
-
-            foreach (Transaction transaction in transactions)
+            net += transaction.Amount;
+            if (transaction.Amount > 0)
             {
-                net += transaction.Amount;
-                if (transaction.Amount > 0)
-                {
-                    posTransactions.Add(transaction);
-                    gross += transaction.Amount;
-                    continue;
-                }
-                negTransactions.Add(transaction);
+                posTransactions.Add(transaction);
+                gross += transaction.Amount;
+                continue;
             }
+            negTransactions.Add(transaction);
         }
         
         Summary summary = new()

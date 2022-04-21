@@ -33,8 +33,16 @@ public class TransactionController : ControllerBase
         {
             return BadRequest("Start date must be less than or equal to end date.");
         }
-        Summary summary = service.BuildSummary(startDate, endDate);
-        return Ok(summary);
+        try
+        {
+            Summary summary = service.BuildSummary(startDate, endDate);
+            return Ok(summary);
+        }
+        catch
+        {
+            return BadRequest();
+        }
+        
     }
 
     [HttpPost]

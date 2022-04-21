@@ -88,9 +88,39 @@ public class TransactionRepository : CrudRepositoryBase, ITransactionRepository
 
             MySqlCommand command = new();
             command.Connection = connection;
-            command.CommandText = "SELECT * FROM transactions WHERE date=@date";
+            command.CommandText = "SELECT * FROM transactions WHERE date=@date ORDER BY date DESC";
             
             command.Parameters.AddWithValue("@date", date.ToString("yyyy-MM-dd"));
+
+            using (MySqlDataReader reader = command.ExecuteReader())
+            {
+                while (reader.Read())
+                {
+                    Transaction transaction = GetTransactionFromReaderLine(reader);
+                    transactions.Add(transaction);
+                }
+            }
+
+            connection.Close();
+        }
+
+        return transactions;
+    }
+
+    public IEnumerable<Transaction> FindBetweenDates(DateTime startDate, DateTime endDate)
+    {
+        List<Transaction> transactions = new();
+
+        using (MySqlConnection connection = GetConnection())
+        {
+            connection.Open();
+
+            MySqlCommand command = new();
+            command.Connection = connection;
+            command.CommandText = "SELECT * FROM transactions WHERE date BETWEEN @start AND @end ORDER BY date DESC";
+            
+            command.Parameters.AddWithValue("@start", startDate.ToString("yyyy-MM-dd"));
+            command.Parameters.AddWithValue("@end", endDate.ToString("yyyy-MM-dd"));
 
             using (MySqlDataReader reader = command.ExecuteReader())
             {
