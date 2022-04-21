@@ -5,6 +5,7 @@ namespace BookkeeperRest.Repositories;
 public interface ITransactionTypeRepository
 {
     public void RemoveAll();
+    public void RemoveMultiple(IEnumerable<string> names);
     public void RemoveByName(string name);
     public void Update(TransactionType transactionType);
     public void Add(TransactionType denomination);

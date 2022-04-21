@@ -96,6 +96,25 @@ public class TransactionTypeRepository : CrudRepositoryBase, ITransactionTypeRep
         return type;
     }
 
+    public void RemoveMultiple(IEnumerable<string> names)
+    {
+        using (MySqlConnection connection = GetConnection())
+        {
+            connection.Open();
+
+            foreach (string name in names)
+            {
+                MySqlCommand command = new();
+                command.Connection = connection;
+                command.CommandText = "DELETE FROM transaction_types WHERE name=@name";
+                command.Parameters.AddWithValue("@name", name);
+                command.ExecuteNonQuery();
+            }
+
+            connection.Close();
+        }
+    }
+
     public void RemoveAll()
     {
         throw new NotImplementedException();

@@ -58,6 +58,11 @@ public class TransactionTypeService : ITransactionTypeService
         return repository.GetAll();
     }
 
+    public void RemoveMultiple(IEnumerable<string> names)
+    {
+        repository.RemoveMultiple(names);
+    }
+
     public void RemoveAll()
     {
         repository.RemoveAll();

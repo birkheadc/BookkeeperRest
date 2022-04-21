@@ -46,11 +46,11 @@ public class TransactionTypeController : ControllerBase
     }
 
     [HttpDelete]
-    public IActionResult DeleteAll()
+    public IActionResult DeleteMultiple([FromBody] IEnumerable<string> names)
     {
         try
         {
-            service.RemoveAll();
+            service.RemoveMultiple(names);
             return Ok();
         }
         catch

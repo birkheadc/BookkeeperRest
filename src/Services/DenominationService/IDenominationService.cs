@@ -5,6 +5,7 @@ namespace BookkeeperRest.Services;
 public interface IDenominationService
 {
     public void RemoveAll();
+    public void RemoveMultiple(IEnumerable<int> values);
     public void RemoveByValue(int value);
     public void Update(Denomination denomination);
     public void Add(int value, bool isDefault = false);

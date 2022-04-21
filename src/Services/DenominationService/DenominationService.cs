@@ -37,6 +37,11 @@ public class DenominationService : IDenominationService
         return repository.GetAll();
     }
 
+    public void RemoveMultiple(IEnumerable<int> values)
+    {
+        repository.RemoveMultiple(values);
+    }
+
     public void RemoveAll()
     {
         repository.RemoveAll();

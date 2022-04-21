@@ -92,6 +92,25 @@ public class DenominationRepository : CrudRepositoryBase, IDenominationRepositor
         return denomination;
     }
 
+    public void RemoveMultiple(IEnumerable<int> values)
+    {
+        using (MySqlConnection connection = GetConnection())
+        {
+            connection.Open();
+
+            foreach (int value in values)
+            {
+                MySqlCommand command = new();
+                command.Connection = connection;
+                command.CommandText = "DELETE FROM denominations WHERE value = @value";
+                command.Parameters.AddWithValue("@value", value);
+                command.ExecuteNonQuery();
+            }
+
+            connection.Close();
+        }
+    }
+
     public void RemoveAll()
     {
         throw new NotImplementedException();

@@ -45,11 +45,11 @@ public class DenominationController : ControllerBase
     }
 
     [HttpDelete]
-    public IActionResult DeleteAll()
+    public IActionResult DeleteMultiple([FromBody] IEnumerable<int> values)
     {
         try
         {
-            service.RemoveAll();
+            service.RemoveMultiple(values);
             return Ok();
         }
         catch
