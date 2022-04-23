@@ -133,4 +133,33 @@ public class TransactionController : ControllerBase
     {
         return Ok();
     }
+
+    [HttpDelete]
+    [Route("{id}")]
+    public IActionResult DeleteById([FromRoute] string id)
+    {
+        try
+        {   service.DeleteById(id);
+            return Ok();
+        }
+        catch
+        {
+            return BadRequest();
+        }
+    }
+
+    [HttpPut]
+    [Route("report")]
+    public IActionResult UpdateMultiple([FromBody] UpdateReport report)
+    {
+        try
+        {
+            service.UpdateMultiple(report);
+            return Ok();
+        }
+        catch
+        {
+            return BadRequest();
+        }
+    }
 }

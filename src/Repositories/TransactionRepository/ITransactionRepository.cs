@@ -9,4 +9,6 @@ public interface ITransactionRepository
     public IEnumerable<Transaction> FindAllOrderByDateDesc();
     public IEnumerable<Transaction> FindByDate(DateTime date);
     public IEnumerable<Transaction> FindBetweenDates(DateTime startDate, DateTime endDate);
+    public void DeleteById(string id);
+    public void UpdateMultiple(IEnumerable<Transaction> transactions);
 }

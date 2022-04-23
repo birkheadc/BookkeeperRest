@@ -53,6 +53,11 @@ public class TransactionService : ITransactionService
         return summary;
     }
 
+    public void DeleteById(string id)
+    {
+        repository.DeleteById(id);
+    }
+
     public IEnumerable<TransactionDTO> GetAllTransactionsNewestFirst()
     {
         return converter.ToDTO(repository.FindAllOrderByDateDesc());
@@ -63,6 +68,13 @@ public class TransactionService : ITransactionService
         if (report.Transactions is not null)
         {
             repository.Add(converter.ToEntity(report.Transactions));
+        }
+    }
+
+    public void UpdateMultiple(UpdateReport report)
+    {
+        if (report.Transactions is not null) {
+            repository.UpdateMultiple(converter.ToEntity(report.Transactions));
         }
     }
 }

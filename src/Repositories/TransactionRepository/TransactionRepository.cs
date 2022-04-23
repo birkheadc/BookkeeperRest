@@ -136,4 +136,43 @@ public class TransactionRepository : CrudRepositoryBase, ITransactionRepository
 
         return transactions;
     }
+
+    public void DeleteById(string id)
+    {
+        using (MySqlConnection connection = GetConnection())
+        {
+            connection.Open();
+
+            MySqlCommand command = new();
+            command.Connection = connection;
+            command.CommandText = "DELETE FROM transactions WHERE id=@id";
+            command.Parameters.AddWithValue("@id", id);
+
+            command.ExecuteNonQuery();
+            
+            connection.Close();
+        }
+    }
+
+    public void UpdateMultiple(IEnumerable<Transaction> transactions)
+    {
+        using (MySqlConnection connection = GetConnection())
+        {
+            connection.Open();
+
+            foreach (Transaction transaction in transactions)
+            {
+                MySqlCommand command = new();
+                command.Connection = connection;
+                command.CommandText = "UPDATE transactions SET amount = @amount, note = @note, type = @type WHERE id = @id";
+                command.Parameters.AddWithValue("@amount", transaction.Amount);
+                command.Parameters.AddWithValue("@note", transaction.Note);
+                command.Parameters.AddWithValue("@type", transaction.Type);
+                command.Parameters.AddWithValue("@id", transaction.Id.ToString());
+                command.ExecuteNonQuery();
+            }
+
+            connection.Close();
+        }
+    }
 }
