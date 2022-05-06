@@ -1,8 +1,10 @@
+using System.Text.Json;
 using BookkeeperRest.Filters;
 using BookkeeperRest.Models.Report;
 using BookkeeperRest.Models.Summary;
 using BookkeeperRest.Models.Transaction;
 using BookkeeperRest.Services.TransactionService;
+using BookkeeperREst.Models.Csv;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BookkeeperRest.Controllers;
@@ -161,5 +163,44 @@ public class TransactionController : ControllerBase
         {
             return BadRequest();
         }
+    }
+
+    [HttpGet]
+    [Route("past-n-days")]
+    public IActionResult GetPastNDays([FromQuery(Name = "n")] int n)
+    {
+        try
+        {
+            return Ok(service.BuildSummariesForPastNDays(n));
+        }
+        catch
+        {
+            return BadRequest();
+        }
+    }
+
+    [HttpPost]
+    [Route("csv")]
+    public IActionResult UploadCsv([FromForm] CsvDto csv)
+    {
+        try
+        {
+            service.RecordCsv(csv);
+            return Ok();
+        }
+        catch
+        {
+            return NoContent();
+        }
+        
+        // try
+        // {
+        //     service.RecordCsv(csv.File);
+        //     return Ok();
+        // }
+        // catch
+        // {
+        //     return NoContent();
+        // }
     }
 }
