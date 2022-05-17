@@ -13,13 +13,13 @@ The following secrets must be established, via `dotnet user-secrets`, for the ap
 For example:
 
 {\
-     "EmailConfig":\
-     {\
-         "From": "example@place.com",\
-         "SmtpServer": "smtp.place.com",\
-         "Port": 123,\
-         "UserName": "example@place.com",\
-         "Password": "sECRETpASSWORD"\
-     },\
-     "ConnectionString": "server=xyz;port=1234;database=bookkeeper;user=user;password=secret"\
+&emsp;"EmailConfig":\
+&emsp;{\
+&emsp;&emsp;"From": "example@place.com",\
+&emsp;&emsp;"SmtpServer": "smtp.place.com",\
+&emsp;&emsp;"Port": 123,\
+&emsp;&emsp;"UserName": "example@place.com",\
+&emsp;&emsp;"Password": "sECRETpASSWORD"\
+&emsp;},\
+&emsp;"ConnectionString": "server=xyz;port=1234;database=bookkeeper;user=user;password=secret"\
 }
