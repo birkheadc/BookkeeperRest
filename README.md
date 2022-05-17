@@ -12,7 +12,7 @@ The following secrets must be established, via `dotnet user-secrets`, for the ap
 
 For example:
 
-{
+{\
     "EmailConfig": 
     {
         "From": "example@place.com",
