@@ -12,7 +12,7 @@ The following secrets must be established, via `dotnet user-secrets`, for the ap
 
 For example:
 
-{\
+`{
     "EmailConfig": 
     {
         "From": "example@place.com",
@@ -22,4 +22,4 @@ For example:
         "Password": "sECRETpASSWORD"
     },
     "ConnectionString": "server=xyz;port=1234;database=bookkeeper;user=user;password=secret"
-}
+}`
