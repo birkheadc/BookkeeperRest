@@ -11,6 +11,12 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
+EmailConfig emailConfig = builder.Configuration.GetSection("EmailConfig").Get<EmailConfig>();
+builder.Services.AddSingleton(emailConfig);
+
+// string connectionString = builder.Configuration["ConnectionString"];
+// builder.Services.AddSingleton(connectionString);
+
 builder.Services.AddSingleton<IPasswordService, PasswordService>();
 builder.Services.AddSingleton<IPasswordRepository, PasswordRepository>();
 builder.Services.AddSingleton<IPasswordHasher, PasswordHasher>();
@@ -41,6 +47,9 @@ builder.Services.AddCors(options =>
 });
 
 var app = builder.Build();
+
+var from = builder.Configuration["Email:From"];
+Console.WriteLine(from);
 
 app.UseCors("All");
 // Configure the HTTP request pipeline.
