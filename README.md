@@ -23,3 +23,17 @@ For example:
 &emsp;},\
 &emsp;"ConnectionString": "server=xyz;port=1234;database=bookkeeper;user=user;password=secret"\
 }
+
+```
+{
+    "EmailConfig": 
+    {
+        "From": "example@place.com",
+        "SmtpServer": "smtp.place.com",
+        "Port": 123,
+        "UserName": "example@place.com",
+        "Password": "sECRETpASSWORD"
+    },
+    "ConnectionString": "server=xyz;port=1234;database=bookkeeper;user=user;password=secret"
+}
+```
