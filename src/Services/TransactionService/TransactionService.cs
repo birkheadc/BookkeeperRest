@@ -1,3 +1,5 @@
+using System.Text;
+using BookkeeperRest.Email;
 using BookkeeperRest.Models.Report;
 using BookkeeperRest.Models.Summary;
 using BookkeeperRest.Models.Transaction;
@@ -10,11 +12,13 @@ public class TransactionService : ITransactionService
 {
     private readonly ITransactionConverter converter;
     private readonly ITransactionRepository repository;
+    private readonly IEmailSender emailSender;
 
-    public TransactionService(ITransactionConverter converter, ITransactionRepository repository)
+    public TransactionService(ITransactionConverter converter, ITransactionRepository repository, IEmailSender emailSender)
     {
         this.converter = converter;
         this.repository = repository;
+        this.emailSender = emailSender;
     }
 
     public Summary BuildSummary(DateTime startDate, DateTime endDate)
@@ -86,6 +90,7 @@ public class TransactionService : ITransactionService
         {
             repository.Add(converter.ToEntity(report.Transactions));
         }
+        SendUpdateEmail();
     }
 
     public void UpdateMultiple(UpdateReport report)
@@ -222,5 +227,40 @@ public class TransactionService : ITransactionService
         }
         
         return transactions;
+    }
+    
+    private string BuildCsvSummary()
+    {
+        List<Transaction> transactions = new List<Transaction>();
+        transactions.AddRange(repository.FindAllOrderByDateDesc());
+
+        StringBuilder sb = new();
+
+        foreach (Transaction transaction in transactions)
+        {
+            sb.Append(transaction.ToString() + "\n");
+        }
+
+        return sb.ToString();
+    }
+
+    private string BuildCsvSummary(DateTime startDate, DateTime endDate)
+    {
+        return "not yet implemented";
+    }
+
+    private void SendUpdateEmail()
+    {
+        Console.WriteLine("Attempting to send email...");
+        string attachmentFileName = "Bookkeeper_Backup_" + DateTime.Now.ToString() + ".txt";
+        string attachmentContent = BuildCsvSummary();
+        Console.WriteLine(attachmentFileName);
+        SimpleTextAttachment attachment = new()
+        {
+            FileName = attachmentFileName,
+            Content = attachmentContent
+        };
+        EmailMessage message = new("Colby", "birkheadc@gmail.com", "Test", "Attached is a back up of all transactions.", attachment);
+        emailSender.SendEmailAsync(message);
     }
 }

@@ -16,7 +16,8 @@ For example:
 {
     "EmailConfig": 
     {
-        "From": "example@place.com",
+        "Name": "Joe",
+        "Address": "example@place.com",
         "SmtpServer": "smtp.place.com",
         "Port": 123,
         "UserName": "example@place.com",

@@ -6,6 +6,7 @@ using BookkeeperRest.Services.PasswordService;
 using BookkeeperRest.Models.Transaction;
 using BookkeeperRest.Services;
 using BookkeeperRest.Repositories;
+using BookkeeperRest.Email;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,10 +14,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 EmailConfig emailConfig = builder.Configuration.GetSection("EmailConfig").Get<EmailConfig>();
 builder.Services.AddSingleton(emailConfig);
-
-// string connectionString = builder.Configuration["ConnectionString"];
-// builder.Services.AddSingleton(connectionString);
-
+builder.Services.AddSingleton<IEmailSender, EmailSender>();
 builder.Services.AddSingleton<IPasswordService, PasswordService>();
 builder.Services.AddSingleton<IPasswordRepository, PasswordRepository>();
 builder.Services.AddSingleton<IPasswordHasher, PasswordHasher>();
