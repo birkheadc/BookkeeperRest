@@ -24,7 +24,14 @@ public class TransactionController : ControllerBase
     [HttpGet]
     public IActionResult GetAllTransactionsNewestFirst()
     {
-        return Ok(service.GetAllTransactionsNewestFirst());
+        try
+        {
+            return Ok(service.GetAllTransactionsNewestFirst());
+        }
+        catch
+        {
+            return BadRequest();
+        }
     }
     
     [HttpGet]

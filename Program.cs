@@ -6,11 +6,15 @@ using BookkeeperRest.Services.PasswordService;
 using BookkeeperRest.Models.Transaction;
 using BookkeeperRest.Services;
 using BookkeeperRest.Repositories;
+using BookkeeperRest.Email;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
+EmailConfig emailConfig = builder.Configuration.GetSection("EmailConfig").Get<EmailConfig>();
+builder.Services.AddSingleton(emailConfig);
+builder.Services.AddSingleton<IEmailSender, EmailSender>();
 builder.Services.AddSingleton<IPasswordService, PasswordService>();
 builder.Services.AddSingleton<IPasswordRepository, PasswordRepository>();
 builder.Services.AddSingleton<IPasswordHasher, PasswordHasher>();
@@ -41,6 +45,9 @@ builder.Services.AddCors(options =>
 });
 
 var app = builder.Build();
+
+var from = builder.Configuration["Email:From"];
+Console.WriteLine(from);
 
 app.UseCors("All");
 // Configure the HTTP request pipeline.
