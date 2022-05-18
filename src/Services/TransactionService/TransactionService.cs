@@ -155,7 +155,7 @@ public class TransactionService : ITransactionService
 
         DateTime date = DateTime.Parse(values[0]);
 
-        // We have to build up one big cash transaction based on which transactions were paid for out of the register.
+        // We have to build up one big cash transaction based on which transactions were paid for out of the register
         // (In this case, any transaction which does not have an asterisk at the end of the name)
         long cash = 0;
         
