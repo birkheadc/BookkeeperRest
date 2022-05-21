@@ -5,7 +5,7 @@ namespace BookkeeperRest.Repositories;
 
 public class DenominationRepository : CrudRepositoryBase, IDenominationRepository
 {
-    public DenominationRepository(IConfiguration configuration) : base(configuration, "denominations", "CREATE TABLE denominations ( value INT DEFAULT 1 NOT NULL PRIMARY KEY, isDefault BOOL DEFAULT 0 NOT NULL)") {}
+    public DenominationRepository(IWebHostEnvironment env, IConfiguration configuration) : base(env, configuration, "denominations", "CREATE TABLE denominations ( value INT DEFAULT 1 NOT NULL PRIMARY KEY, isDefault BOOL DEFAULT 0 NOT NULL)") {}
 
     public void Add(Denomination denomination)
     {

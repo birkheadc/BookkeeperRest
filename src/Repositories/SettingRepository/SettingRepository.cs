@@ -5,7 +5,7 @@ namespace BookkeeperRest.Repositories;
 
 public class SettingRepository : CrudRepositoryBase, ISettingRepository
 {
-    public SettingRepository(IConfiguration configuration) : base(configuration, "settings", "CREATE TABLE settings ( key_string VARCHAR(255) DEFAULT '__' NOT NULL PRIMARY KEY, value_string VARCHAR(255) DEFAULT '__' NOT NULL )") {}
+    public SettingRepository(IWebHostEnvironment env, IConfiguration configuration) : base(env, configuration, "settings", "CREATE TABLE settings ( key_string VARCHAR(255) DEFAULT '__' NOT NULL PRIMARY KEY, value_string VARCHAR(255) DEFAULT '__' NOT NULL )") {}
     public void Add(Setting setting)
     {
         using (MySqlConnection connection = GetConnection())
@@ -98,22 +98,37 @@ public class SettingRepository : CrudRepositoryBase, ISettingRepository
 
     public void UpdateAll(IEnumerable<Setting> settings)
     {
+        foreach (Setting setting in settings)
+        {
+            if (DoesSettingExist(setting) == true)
+            {
+                UpdateByKey(setting.Key, setting.Value);
+            }
+            else
+            {
+                Add(setting);
+            }
+        }
+    }
+
+    private bool DoesSettingExist(Setting setting)
+    {
         using (MySqlConnection connection = GetConnection())
         {
             connection.Open();
 
-            foreach (Setting setting in settings)
+            MySqlCommand command = new();
+            command.Connection = connection;
+            command.CommandText = "SELECT * FROM settings WHERE key_string = @key";
+            command.Parameters.AddWithValue("@key", setting.Key);
+
+            if (command.ExecuteScalar() == null)
             {
-                MySqlCommand command = new();
-                command.Connection = connection;
-                command.CommandText = "UPDATE settings SET value_string = @value WHERE key_string = @key";
-                command.Parameters.AddWithValue("@key", setting.Key);
-                command.Parameters.AddWithValue("@value", setting.Value);
-
-                command.ExecuteNonQuery();
+                connection.Close();
+                return false;
             }
-
             connection.Close();
+            return true;
         }
     }
 }

@@ -7,7 +7,7 @@ public class PasswordRepository : CrudRepositoryBase, IPasswordRepository
     private const string DEFAULT_PASSWORD = "";
 
 
-    public PasswordRepository(IConfiguration configuration) : base(configuration, "password", "CREATE TABLE password (password VARCHAR(255))") {}
+    public PasswordRepository(IWebHostEnvironment env, IConfiguration configuration) : base(env, configuration, "password", "CREATE TABLE password (password VARCHAR(255))") {}
 
     private bool IsPasswordSet()
     {

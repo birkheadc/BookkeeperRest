@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace BookkeeperRest.Controllers;
 
 [ApiController]
-[Route("setting")]
+[Route("api/setting")]
 [PasswordAuth]
 public class SettingController : ControllerBase
 {
