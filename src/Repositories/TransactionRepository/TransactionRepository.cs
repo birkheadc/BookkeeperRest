@@ -5,7 +5,7 @@ namespace BookkeeperRest.Repositories.TransactionRepository;
 
 public class TransactionRepository : CrudRepositoryBase, ITransactionRepository
 {
-    public TransactionRepository(IConfiguration configuration) : base(configuration, "transactions", "CREATE TABLE transactions ( id CHAR(36) DEFAULT 0 NOT NULL PRIMARY KEY, date DATE DEFAULT (CURDATE()) NOT NULL, type VARCHAR(255) DEFAULT '__error__' NOT NULL, amount BIGINT DEFAULT 0 NOT NULL, note TEXT )") {}
+    public TransactionRepository(IWebHostEnvironment env, IConfiguration configuration) : base(env, configuration, "transactions", "CREATE TABLE transactions ( id CHAR(36) DEFAULT 0 NOT NULL PRIMARY KEY, date DATE DEFAULT (CURDATE()) NOT NULL, type VARCHAR(255) DEFAULT '__error__' NOT NULL, amount BIGINT DEFAULT 0 NOT NULL, note TEXT )") {}
 
     public void Add(Transaction transaction)
     {

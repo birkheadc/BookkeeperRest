@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace BookkeeperRest.Controllers;
 
 [ApiController]
-[Route("denomination")]
+[Route("api/denomination")]
 [PasswordAuth]
 public class DenominationController : ControllerBase
 {

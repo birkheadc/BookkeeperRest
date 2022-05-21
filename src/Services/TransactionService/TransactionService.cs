@@ -260,7 +260,7 @@ public class TransactionService : ITransactionService
             FileName = attachmentFileName,
             Content = attachmentContent
         };
-        EmailMessage message = new("Colby", "birkheadc@gmail.com", "Test", "Attached is a back up of all transactions.", attachment);
+        EmailMessage message = new("Colby", "birkheadc@gmail.com", "Bookkeeper Updated", "Attached is a back up of all transactions as of the recent addition.", attachment);
         emailSender.SendEmailAsync(message);
     }
 }

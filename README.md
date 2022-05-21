@@ -2,27 +2,15 @@
 
 This is the back end for my simple book keeping application, a REST API built in ASP.NET Core.
 
-## Necessary Secrets:
+## Necessary Environment Variables:
 
-The following secrets must be established, via `dotnet user-secrets`, for the application to run:
+The following environment variables must be established, via `not sure yet`, for the application to run:
 
-- EmailConfig: contains all the data the server needs to log into it's email so it can send emails.
+- `ASPNETCORE_EMAILCONFIG_NAME`: The name of the email client the app will use
+- `ASPNETCORE_EMAILCONFIG_ADDRESS`: The address of the same email client.
+- `ASPNETCORE_EMAILCONFIG_SMTPSERVER`: The address of the email client's smtp server.
+- `ASPNETCORE_EMAILCONFIG_PORT`: The port for the email client.
+- `ASPNETCORE_EMAILCONFIG_USERNAME`: The username of the email client.
+- `ASPNETCORE_EMAILCONFIG_PASSWORD`: The password of the email client.
 
-- ConnectionString: the connection string to log into the database
-
-For example:
-
-```
-{
-    "EmailConfig": 
-    {
-        "Name": "Joe",
-        "Address": "example@place.com",
-        "SmtpServer": "smtp.place.com",
-        "Port": 123,
-        "UserName": "example@place.com",
-        "Password": "sECRETpASSWORD"
-    },
-    "ConnectionString": "server=xyz;port=1234;database=bookkeeper;user=user;password=secret"
-}
-```
+- ASPNETCORE_CONNECTIONSTRING: The connection string for the application to connect to the database.

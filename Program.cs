@@ -1,3 +1,4 @@
+using System;
 using BookkeeperRest.Repositories.PasswordRepository;
 using BookkeeperRest.Security.PasswordHasher;
 using BookkeeperRest.Repositories.TransactionRepository;
@@ -12,8 +13,28 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
-EmailConfig emailConfig = builder.Configuration.GetSection("EmailConfig").Get<EmailConfig>();
+EmailConfig emailConfig;
+
+if (builder.Environment.IsDevelopment())
+{
+    emailConfig = builder.Configuration.GetSection("EmailConfig").Get<EmailConfig>();
+    
+}
+else
+{
+    emailConfig = new()
+    {
+        Name = Environment.GetEnvironmentVariable("ASPNETCORE_EMAILCONFIG_NAME") ?? "",
+        Address = Environment.GetEnvironmentVariable("ASPNETCORE_EMAILCONFIG_ADDRESS") ?? "",
+        SmtpServer = Environment.GetEnvironmentVariable("ASPNETCORE_EMAILCONFIG_SMTPSERVER") ?? "",
+        Port = Int32.Parse(Environment.GetEnvironmentVariable("ASPNETCORE_EMAILCONFIG_PORT") ?? "0"),
+        UserName = Environment.GetEnvironmentVariable("ASPNETCORE_EMAILCONFIG_USERNAME") ?? "",
+        Password = Environment.GetEnvironmentVariable("ASPNETCORE_EMAILCONFIG_PASSWORD") ?? ""
+    };
+}
+
 builder.Services.AddSingleton(emailConfig);
+
 builder.Services.AddSingleton<IEmailSender, EmailSender>();
 builder.Services.AddSingleton<IPasswordService, PasswordService>();
 builder.Services.AddSingleton<IPasswordRepository, PasswordRepository>();
@@ -45,9 +66,6 @@ builder.Services.AddCors(options =>
 });
 
 var app = builder.Build();
-
-var from = builder.Configuration["Email:From"];
-Console.WriteLine(from);
 
 app.UseCors("All");
 // Configure the HTTP request pipeline.

@@ -5,7 +5,7 @@ namespace BookkeeperRest.Repositories;
 
 public class TransactionTypeRepository : CrudRepositoryBase, ITransactionTypeRepository
 {
-    public TransactionTypeRepository(IConfiguration configuration) : base(configuration, "transaction_types", "CREATE TABLE transaction_types ( name VARCHAR(255) DEFAULT 'default' NOT NULL PRIMARY KEY, polarity TINYINT DEFAULT 1 NOT NULL, isDefault BOOL DEFAULT 0 NOT NULL)") {}
+    public TransactionTypeRepository(IWebHostEnvironment env, IConfiguration configuration) : base(env, configuration, "transaction_types", "CREATE TABLE transaction_types ( name VARCHAR(255) DEFAULT 'default' NOT NULL PRIMARY KEY, polarity TINYINT DEFAULT 1 NOT NULL, isDefault BOOL DEFAULT 0 NOT NULL)") {}
 
     public void Add(TransactionType type)
     {

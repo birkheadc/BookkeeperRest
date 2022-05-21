@@ -9,10 +9,19 @@ public abstract class CrudRepositoryBase
     internal readonly string tableName;
     private readonly string schema;
 
-    public CrudRepositoryBase(IConfiguration configuration, string tableName, string schema)
+    public CrudRepositoryBase(IWebHostEnvironment env, IConfiguration configuration, string tableName, string schema)
     {
-        // If this connection string does not work the app will crash. Eventually I hope to fix that but for now sorry.
-        connectionString = configuration["ConnectionString"];
+        // If this connection string does not work the app will simply crash. Eventually I hope to fix that but for now sorry.
+
+        if (env.IsDevelopment())
+        {
+            connectionString = configuration["ConnectionString"];
+        }
+        else
+        {
+            connectionString = Environment.GetEnvironmentVariable("ASPNETCORE_CONNECTIONSTRING") ?? "";
+        }
+
         this.tableName = tableName;
         this.schema = schema;
         InitializeDatabase();   

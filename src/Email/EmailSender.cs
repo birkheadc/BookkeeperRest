@@ -1,3 +1,4 @@
+using System;
 using System.Net;
 using System.Text;
 using MailKit.Net.Smtp;
@@ -94,10 +95,10 @@ public class EmailSender : IEmailSender
                 await client.SendAsync(message);
                 Console.WriteLine("Sent successfully!");
             }
-            catch
+            catch (Exception e)
             {
                 Console.WriteLine("Failed to send email.");
-                throw;
+                Console.WriteLine("Error: " + e.Message);
             }
             finally
             {
