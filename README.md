@@ -4,7 +4,7 @@ This is the back end for my simple book keeping application, a REST API built in
 
 ## Necessary Environment Variables:
 
-The following environment variables must be established, via `not sure yet`, for the application to run:
+The following environment variables must be established, via Dockerfile, for the application to run:
 
 - `ASPNETCORE_EMAILCONFIG_NAME`: The name of the email client the app will use
 - `ASPNETCORE_EMAILCONFIG_ADDRESS`: The address of the same email client.

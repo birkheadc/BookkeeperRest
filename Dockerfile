@@ -23,7 +23,7 @@ ENV ASPNETCORE_EMAILCONFIG_SMTPSERVER=${EMAILCONFIG_SMTPSERVER}
 ENV ASPNETCORE_EMAILCONFIG_PORT=${EMAILCONFIG_PORT}
 ENV ASPNETCORE_EMAILCONFIG_USERNAME=${EMAILCONFIG_USERNAME}
 ENV ASPNETCORE_EMAILCONFIG_PASSWORD=${EMAILCONFIG_PASSWORD}
-ENV ASPNETCORE_CONNECTIONSTRING="server=db;port=3306;database=bookkeeper;user=${DATABASE_USERNAME};password=${DATABASE_PASSWORD}"
+ENV ASPNETCORE_CONNECTIONSTRING="server=bookkeeper-db;port=3306;database=bookkeeper;user=${DATABASE_USERNAME};password=${DATABASE_PASSWORD}"
 
 # Creates a non-root user with an explicit UID and adds permission to access the /app folder
 # For more info, please refer to https://aka.ms/vscode-docker-dotnet-configure-containers
