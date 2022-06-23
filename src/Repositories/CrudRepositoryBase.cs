@@ -24,7 +24,7 @@ public abstract class CrudRepositoryBase
 
         this.tableName = tableName;
         this.schema = schema;
-        InitializeDatabase();   
+        InitializeDatabase();
     }
 
     internal void InitializeDatabase()

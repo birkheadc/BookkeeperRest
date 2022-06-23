@@ -18,7 +18,6 @@ EmailConfig emailConfig;
 if (builder.Environment.IsDevelopment())
 {
     emailConfig = builder.Configuration.GetSection("EmailConfig").Get<EmailConfig>();
-    
 }
 else
 {

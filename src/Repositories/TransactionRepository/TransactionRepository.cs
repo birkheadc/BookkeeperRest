@@ -9,31 +9,94 @@ public class TransactionRepository : CrudRepositoryBase, ITransactionRepository
 
     public void Add(Transaction transaction)
     {
-        throw new NotImplementedException();
+        using (MySqlConnection connection = GetConnection())
+        {
+            connection.Open();
+
+            MySqlCommand command = new();
+            command.Connection = connection;
+            command.CommandText = "INSERT INTO transactions (id, date, type, amount, note) VALUES (@id, @date, @type, @amount, @note)";
+
+            command.Parameters.AddWithValue("@id", transaction.Id.ToString());
+            command.Parameters.AddWithValue("@date", transaction.Date.ToString("yyyy-MM-dd"));
+            command.Parameters.AddWithValue("@type", transaction.Type);
+            command.Parameters.AddWithValue("@amount", transaction.Amount);
+            command.Parameters.AddWithValue("@note", transaction.Note);
+
+            command.ExecuteNonQuery();
+        }
     }
 
-    public void Add(IEnumerable<Transaction> transactions)
+    public void AddAmount(Transaction transaction)
     {
         using (MySqlConnection connection = GetConnection())
         {
             connection.Open();
 
-            foreach (Transaction transaction in transactions)
+            MySqlCommand command = new();
+            command.Connection = connection;
+            command.CommandText = "UPDATE transactions SET amount = amount + @amount WHERE date = @date AND type = @type";
+
+            command.Parameters.AddWithValue("@date", transaction.Date.ToString("yyyy-MM-dd"));
+            command.Parameters.AddWithValue("@type", transaction.Type);
+            command.Parameters.AddWithValue("@amount", transaction.Amount);
+
+            command.ExecuteNonQuery();
+        }
+    }
+
+    public void Add(IEnumerable<Transaction> transactions)
+    {
+        foreach (Transaction transaction in transactions)
+        {
+            if (DoesTransactionTypeOnDateExist(transaction.Type, transaction.Date))
             {
-                MySqlCommand command = new();
-                command.Connection = connection;
-                command.CommandText = "INSERT INTO transactions (id, date, type, amount, note) VALUES (@id, @date, @type, @amount, @note)";
-
-                command.Parameters.AddWithValue("@id", transaction.Id.ToString());
-                command.Parameters.AddWithValue("@date", transaction.Date.ToString("yyyy-MM-dd"));
-                command.Parameters.AddWithValue("@type", transaction.Type);
-                command.Parameters.AddWithValue("@amount", transaction.Amount);
-                command.Parameters.AddWithValue("@note", transaction.Note);
-
-                command.ExecuteNonQuery();
+                AddAmount(transaction);
+                continue;
             }
+            Add(transaction);
+            continue;
+        }
 
-            connection.Close();
+
+        // using (MySqlConnection connection = GetConnection())
+        // {
+        //     connection.Open();
+
+        //     foreach (Transaction transaction in transactions)   
+        //     {
+        //         MySqlCommand command = new();
+        //         command.Connection = connection;
+        //         command.CommandText = "INSERT INTO transactions (id, date, type, amount, note) VALUES (@id, @date, @type, @amount, @note)";
+
+        //         command.Parameters.AddWithValue("@id", transaction.Id.ToString());
+        //         command.Parameters.AddWithValue("@date", transaction.Date.ToString("yyyy-MM-dd"));
+        //         command.Parameters.AddWithValue("@type", transaction.Type);
+        //         command.Parameters.AddWithValue("@amount", transaction.Amount);
+        //         command.Parameters.AddWithValue("@note", transaction.Note);
+
+        //         command.ExecuteNonQuery();
+        //     }
+
+        //     connection.Close();
+        // }
+    }
+
+    private bool DoesTransactionTypeOnDateExist(string type, DateTime date)
+    {
+        using (MySqlConnection connection = GetConnection())
+        {
+            connection.Open();
+
+            MySqlCommand command = new();
+            command.Connection = connection;
+            command.CommandText = "SELECT COUNT(*) FROM transactions WHERE date=@date AND type=@type";
+            command.Parameters.AddWithValue("@date", date.ToString("yyyy-MM-dd"));
+            command.Parameters.AddWithValue("@type", type);
+
+            int n = GetCountFromScalarCommand(command);
+            Console.WriteLine("Does" + type + "exist on date: " + date + "?: " + (n > 0));
+            return n > 0;
         }
     }
 
