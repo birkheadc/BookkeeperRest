@@ -1,13 +1,7 @@
 using System;
-using BookkeeperRest.Repositories.PasswordRepository;
-using BookkeeperRest.Security.PasswordHasher;
-using BookkeeperRest.Repositories.TransactionRepository;
-using BookkeeperRest.Services.TransactionService;
-using BookkeeperRest.Services.PasswordService;
-using BookkeeperRest.Models.Transaction;
-using BookkeeperRest.Services;
-using BookkeeperRest.Repositories;
-using BookkeeperRest.Email;
+using BookkeeperRest.New.Email;
+using BookkeeperRest.New.Repositories;
+using BookkeeperRest.New.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -34,19 +28,24 @@ else
 
 builder.Services.AddSingleton(emailConfig);
 
-builder.Services.AddSingleton<IEmailSender, EmailSender>();
-builder.Services.AddSingleton<IPasswordService, PasswordService>();
-builder.Services.AddSingleton<IPasswordRepository, PasswordRepository>();
-builder.Services.AddSingleton<IPasswordHasher, PasswordHasher>();
-builder.Services.AddSingleton<ITransactionService, TransactionService>();
-builder.Services.AddSingleton<ITransactionRepository, TransactionRepository>();
-builder.Services.AddSingleton<ITransactionConverter, TransactionConverter>();
-builder.Services.AddSingleton<IDenominationService, DenominationService>();
-builder.Services.AddSingleton<IDenominationRepository, DenominationRepository>();
-builder.Services.AddSingleton<ITransactionTypeRepository, TransactionTypeRepository>();
-builder.Services.AddSingleton<ITransactionTypeService, TransactionTypeService>();
-builder.Services.AddSingleton<ISettingRepository, SettingRepository>();
-builder.Services.AddSingleton<ISettingService, SettingService>();
+builder.Services.AddScoped<IEmailSender, EmailSender>();
+
+builder.Services.AddScoped<IPasswordService, PasswordService>();
+builder.Services.AddScoped<IUserSettingService, UserSettingService>();
+builder.Services.AddScoped<IReportService, ReportService>();
+builder.Services.AddScoped<ICategoryService, CategoryService>();
+builder.Services.AddScoped<IDenominationService, DenominationService>();
+
+
+
+builder.Services.AddScoped<IEarningCategoryRepository, EarningCategoryRepository>();
+builder.Services.AddScoped<IExpenseCategoryRepository, ExpenseCategoryRepository>();
+builder.Services.AddScoped<IDenominationRepository, DenominationRepository>();
+builder.Services.AddScoped<IPasswordRepository, PasswordRepository>();
+builder.Services.AddScoped<IUserSettingRepository, UserSettingRepository>();
+builder.Services.AddScoped<IEarningRepository, EarningRepository>();
+builder.Services.AddScoped<IExpenseRepository, ExpenseRepository>();
+builder.Services.AddScoped<IDenominationRepository, DenominationRepository>();
 
 
 
