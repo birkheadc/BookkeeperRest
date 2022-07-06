@@ -22,7 +22,7 @@ public class UserSettingService : IUserSettingService
     {
         UserSettingsWrapper wrapper = new()
         {
-            Settings = userSettingRepository.GetAllSettings(),
+            UserSettings = userSettingRepository.GetAllSettings(),
             EarningCategories = earningCategoryRepository.GetAllCategories(),
             ExpenseCategories = expenseCategoryRepository.GetAllCategories(),
             Denominations = denominationRepository.GetAllDenominations()
@@ -35,9 +35,10 @@ public class UserSettingService : IUserSettingService
         return userSettingRepository.GetValueByName(name);
     }
 
-    public void UpdateSettings(IEnumerable<UserSetting> settings)
+    public void UpdateSettings(UserSettingsWrapper wrapper)
     {
         // Todo (To redo)
-        //userSettingRepository.UpdateSetting(settings);
+        userSettingRepository.UpdateSettings(wrapper.UserSettings);
+        // update denom, categories as well
     }   
 }

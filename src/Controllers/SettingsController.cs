@@ -35,31 +35,30 @@ public class SettingsController : ControllerBase
         }
     }
 
-    [HttpGet]
-    [Route("name")]
-    public IActionResult GetValueByName([FromQuery(Name = "name"), Required] string name)
-    {
-        try
-        {
-            return Ok(userSettingService.GetValueByName(name));
-        }
-        catch (KeyNotFoundException e)
-        {
-            return NotFound("A setting with that name does not exist.");
-        }
-        catch
-        {
-            return BadRequest("Something went wrong...");
-        }
-    }
+    // [HttpGet]
+    // [Route("name")]
+    // public IActionResult GetValueByName([FromQuery(Name = "name"), Required] string name)
+    // {
+    //     try
+    //     {
+    //         return Ok(userSettingService.GetValueByName(name));
+    //     }
+    //     catch (KeyNotFoundException e)
+    //     {
+    //         return NotFound("A setting with that name does not exist.");
+    //     }
+    //     catch
+    //     {
+    //         return BadRequest("Something went wrong...");
+    //     }
+    // }
 
-    [HttpPut]
-    public IActionResult UpdateSettings([FromBody, Required] JsonElement element)
+    [HttpPost]
+    public IActionResult UpdateSettings([FromBody, Required] UserSettingsWrapper wrapper)
     {
         try
         {
-            IEnumerable<UserSetting> userSettings = ParseJsonForUserSettings(element);
-            userSettingService.UpdateSettings(userSettings);
+            userSettingService.UpdateSettings(wrapper);
             return Ok();
         }
         catch
@@ -68,19 +67,19 @@ public class SettingsController : ControllerBase
         }
     }
 
-    private IEnumerable<UserSetting> ParseJsonForUserSettings(JsonElement element)
-    {
-        Dictionary<string, string> dic = element.Deserialize<Dictionary<string, string>>();
-        List<UserSetting> userSettings = new();
-        foreach (KeyValuePair<string, string> item in dic)
-        {
-            UserSetting userSetting = new()
-            {
-                Name = item.Key,
-                Value = item.Value
-            };
-            userSettings.Add(userSetting);
-        }
-        return userSettings;
-    }
+    // private IEnumerable<UserSetting> ParseJsonForUserSettings(JsonElement element)
+    // {
+    //     Dictionary<string, string> dic = element.Deserialize<Dictionary<string, string>>();
+    //     List<UserSetting> userSettings = new();
+    //     foreach (KeyValuePair<string, string> item in dic)
+    //     {
+    //         UserSetting userSetting = new()
+    //         {
+    //             Name = item.Key,
+    //             Value = item.Value
+    //         };
+    //         userSettings.Add(userSetting);
+    //     }
+    //     return userSettings;
+    // }
 }

@@ -6,5 +6,5 @@ public interface IUserSettingRepository
 {
     public string GetValueByName(string name);
     public UserSettings GetAllSettings();
-    public void UpdateSetting(IEnumerable<UserSetting> settings);
+    public void UpdateSettings(UserSettings settings);
 }

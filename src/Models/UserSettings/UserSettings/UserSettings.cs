@@ -2,6 +2,6 @@ namespace BookkeeperRest.New.Models;
 
 public record UserSettings
 {
-    public string EmailName { get; set; }
-    public string EmailAddress { get; set; }
+    public UserSetting EmailName { get; set; }
+    public UserSetting EmailAddress { get; set; }
 }

@@ -12,29 +12,21 @@ public class UserSettingRepository : CrudRepositoryBase, IUserSettingRepository
 
     public UserSettings GetAllSettings()
     {
-        UserSettings userSettings = new();
-
-        using (MySqlConnection connection = GetConnection())
+        UserSettings userSettings = new()
         {
-            connection.Open();
-            
-            MySqlCommand command = new();
-            command.Connection = connection;
-            command.CommandText = "SELECT * FROM " + tableName;
-
-            using (MySqlDataReader reader = command.ExecuteReader())
+            EmailName = new UserSetting()
             {
-                while (reader.Read())
-                {
-                    UserSetting setting = GetUserSettingFromReader(reader);
-                    // Todo
-                }
+                Name = "emailName",
+                Value = GetValueByName("emailName")
+            },
+            EmailAddress = new UserSetting()
+            {
+                Name = "emailAddress",
+                Value = GetValueByName("emailAddress")
             }
-            
-            connection.Close();
-        }
+        };
 
-        return settings;
+        return userSettings;
     }
 
     public string GetValueByName(string name)
@@ -55,7 +47,13 @@ public class UserSettingRepository : CrudRepositoryBase, IUserSettingRepository
             {
                 if (reader.Read() == false)
                 {
-                    throw new KeyNotFoundException();
+                    UserSetting setting = new()
+                    {
+                        Name = name,
+                        Value = ""
+                    };
+                    InsertSetting(setting);
+                    return setting.Value;
                 }
                 value = reader["value"].ToString() ?? "";
             }
@@ -65,17 +63,19 @@ public class UserSettingRepository : CrudRepositoryBase, IUserSettingRepository
         return value;
     }
 
-    public void UpdateSetting(IEnumerable<UserSetting> settings)
+    public void UpdateSettings(UserSettings settings)
     {
-        foreach (UserSetting setting in settings)
-            {
-                if (DoesSettingExistByName(setting.Name) == true)
-                {
-                    UpdateSetting(setting);
-                    return;
-                }
-                InsertSetting(setting);
-            }
+        UpdateSetting(settings.EmailName);
+        UpdateSetting(settings.EmailAddress);
+        // foreach (UserSetting setting in settings)
+        // {
+        //     if (DoesSettingExistByName(setting.Name) == true)
+        //     {
+        //         UpdateSetting(setting);
+        //         return;
+        //     }
+        //     InsertSetting(setting);
+        // }
     }
 
     private UserSetting GetUserSettingFromReader(MySqlDataReader reader)
