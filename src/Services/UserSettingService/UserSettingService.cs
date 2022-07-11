@@ -39,6 +39,8 @@ public class UserSettingService : IUserSettingService
     {
         // Todo (To redo)
         userSettingRepository.UpdateSettings(wrapper.UserSettings);
-        // update denom, categories as well
+        earningCategoryRepository.UpdateCategories(wrapper.EarningCategories);
+        expenseCategoryRepository.UpdateCategories(wrapper.ExpenseCategories);
+        denominationRepository.UpdateAll(wrapper.Denominations);
     }   
 }

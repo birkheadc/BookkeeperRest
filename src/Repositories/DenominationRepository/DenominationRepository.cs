@@ -39,6 +39,7 @@ public class DenominationRepository : CrudRepositoryBase, IDenominationRepositor
 
     public void UpdateAll(IEnumerable<Denomination> denominations)
     {
+        DeleteAll();
         foreach (Denomination denomination in denominations)
         {
             if (DoesDenominationExist(denomination) == true)
@@ -49,6 +50,21 @@ public class DenominationRepository : CrudRepositoryBase, IDenominationRepositor
             {
                 InsertDenomination(denomination);
             }
+        }
+    }
+
+    private void DeleteAll()
+    {
+        using (MySqlConnection connection = GetConnection())
+        {
+            connection.Open();
+            
+            MySqlCommand command = new();
+            command.Connection = connection;
+            command.CommandText = "DELETE FROM " + tableName;
+            command.ExecuteNonQuery();
+            
+            connection.Close();
         }
     }
 

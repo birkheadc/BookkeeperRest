@@ -28,6 +28,7 @@ public class ExpenseCategoryRepository : CrudRepositoryBase, IExpenseCategoryRep
 
     public void UpdateCategories(IEnumerable<Category> categories)
     {
+        DeleteAll();
         foreach (Category category in categories)
         {
             if (DoesCategoryExistByName(category.Name) == false)
@@ -38,6 +39,22 @@ public class ExpenseCategoryRepository : CrudRepositoryBase, IExpenseCategoryRep
             {
                 UpdateCategory(category);
             }
+        }
+    }
+
+    private void DeleteAll()
+    {
+        using (MySqlConnection connection = GetConnection())
+        {
+            connection.Open();
+            
+            MySqlCommand command = new();
+            command.Connection = connection;
+            command.CommandText = "DELETE FROM " + tableName;
+
+            command.ExecuteNonQuery();
+            
+            connection.Close();
         }
     }
 
