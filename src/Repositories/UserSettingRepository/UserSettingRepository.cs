@@ -23,6 +23,11 @@ public class UserSettingRepository : CrudRepositoryBase, IUserSettingRepository
             {
                 Name = "emailAddress",
                 Value = GetValueByName("emailAddress")
+            },
+            DefaultBrowseMode = new UserSetting()
+            {
+                Name = "defaultBrowseMode",
+                Value = GetValueByName("defaultBrowseMode")
             }
         };
 

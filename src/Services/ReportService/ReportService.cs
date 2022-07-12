@@ -72,16 +72,106 @@ public class ReportService : IReportService
             isCashDefault = "true";
         }
 
+        Summary summary = GenerateSummaryForReports(reports);
+
         ReportsWrapper wrapper = new()
         {
             Reports = reports,
             EarningCategories = earningCategories,
             ExpenseCategories = expenseCategories,
             Denominations = denominations,
-            IsCashDefault = isCashDefault
+            Summary = summary
         };
 
         return wrapper;
+    }
+
+    private Summary GenerateSummaryForReports(IEnumerable<Report> reports)
+    {
+        int numDays = 0;
+        long gross = 0;
+        long net = 0;
+        double aveGross = 0;
+        double aveNet = 0;
+
+        Dictionary<string, long> breakdownTotals = new();
+
+        foreach (Report report in reports)
+        {
+            if (report.Earnings.Count() > 0 || report.Expenses.Count() > 0)
+            {
+                numDays++;
+                foreach (Earning earning in report.Earnings)
+                {
+                    gross += earning.Amount;
+                    net += earning.Amount;
+
+                    if (breakdownTotals.ContainsKey(earning.Category) == true)
+                    {
+                        breakdownTotals[earning.Category] += earning.Amount;
+                    }
+                    else
+                    {
+                        breakdownTotals.Add(earning.Category, earning.Amount);
+                    }
+
+                }
+                foreach (Expense expense in report.Expenses)
+                {
+                    if (expense.WasTakenFromCash == true)
+                    {
+                        gross += expense.Amount;
+                    }
+                    else
+                    {
+                        net -= expense.Amount;
+                    }
+
+                    if (breakdownTotals.ContainsKey(expense.Category) == true)
+                    {
+                        breakdownTotals[expense.Category] -= expense.Amount;
+                    }
+                    else
+                    {
+                        breakdownTotals.Add(expense.Category, expense.Amount * -1);
+                    }
+                }
+            }
+        }
+        aveGross = (double)gross / numDays;
+        aveNet = (double)net / numDays;
+
+        IEnumerable<Breakdown> breakdowns = GenerateBreakdownsFromBreakdownTotals(breakdownTotals, numDays);
+
+        Summary summary = new()
+        {
+            Gross = gross,
+            Net = net,
+            AveGross = aveGross,
+            AveNet = aveNet,
+            Breakdowns = breakdowns
+        };
+
+        return summary;
+    }
+
+    private IEnumerable<Breakdown> GenerateBreakdownsFromBreakdownTotals(Dictionary<string, long> totals, int numDays)
+    {
+        List<Breakdown> breakdowns = new();
+
+        foreach (KeyValuePair<string, long> total in totals)
+        {
+            Breakdown breakdown = new()
+            {
+                Category = total.Key,
+                Total = total.Value,
+                Average = (double)total.Value / numDays
+            };
+
+            breakdowns.Add(breakdown);
+        }
+
+        return breakdowns;
     }
 
     private Report GenerateReportForDate(DateTime date)
