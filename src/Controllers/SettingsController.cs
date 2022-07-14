@@ -59,7 +59,7 @@ public class SettingsController : ControllerBase
         try
         {
             userSettingService.UpdateSettings(wrapper);
-            return Ok();
+            return Ok(userSettingService.GetAllSettings());
         }
         catch
         {

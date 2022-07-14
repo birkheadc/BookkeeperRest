@@ -7,4 +7,5 @@ public interface IEarningRepository
     public void AddEarnings(IEnumerable<Earning> earnings);
     public void RemoveEarningsByDate(DateTime date);
     public IEnumerable<Earning> GetEarningsByDate(DateTime date);
+    public void RemoveAll();
 }

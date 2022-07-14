@@ -84,4 +84,9 @@ public class EarningRepository : CrudRepositoryBase, IEarningRepository
         };
         return earning;
     }
+
+    public void RemoveAll()
+    {
+        
+    }
 }

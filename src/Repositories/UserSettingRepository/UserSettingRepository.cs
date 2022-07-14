@@ -72,6 +72,7 @@ public class UserSettingRepository : CrudRepositoryBase, IUserSettingRepository
     {
         UpdateSetting(settings.EmailName);
         UpdateSetting(settings.EmailAddress);
+        UpdateSetting(settings.DefaultBrowseMode);
         // foreach (UserSetting setting in settings)
         // {
         //     if (DoesSettingExistByName(setting.Name) == true)

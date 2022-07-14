@@ -1,3 +1,4 @@
+using System.Text;
 using BookkeeperRest.New.Models;
 using BookkeeperRest.New.Repositories;
 
@@ -14,6 +15,7 @@ public class ReportService : IReportService
     private readonly IExpenseRepository expenseRepository;
     private readonly EarningConverter earningConverter;
     private readonly ExpenseConverter expenseConverter;
+    private readonly TransactionConverter transactionConverter;
 
     public ReportService(IExpenseRepository expenseRepository, IEarningRepository earningRepository, IDenominationRepository denominationRepository, IExpenseCategoryRepository expenseCategoryRepository, IEarningCategoryRepository earningCategoryRepository, IUserSettingRepository userSettingRepository)
     {
@@ -26,6 +28,8 @@ public class ReportService : IReportService
 
         this.earningConverter = new();
         this.expenseConverter = new();
+
+        this.transactionConverter = new();
     }
 
     public void ProcessReport(ReportDtoIncoming report)
@@ -138,9 +142,12 @@ public class ReportService : IReportService
                 }
             }
         }
-        aveGross = (double)gross / numDays;
-        aveNet = (double)net / numDays;
-
+        if (numDays > 0)
+        {
+            aveGross = (double)gross / numDays;
+            aveNet = (double)net / numDays;
+        }
+    
         IEnumerable<Breakdown> breakdowns = GenerateBreakdownsFromBreakdownTotals(breakdownTotals, numDays);
 
         Summary summary = new()
@@ -213,5 +220,103 @@ public class ReportService : IReportService
         while (date <= endDate);
 
         return dates;
+    }
+
+    public void ProcessCsv(IFormFile file)
+    {
+        try
+        {
+            List<TransactionDto> transactions = new();
+
+            using (StreamReader reader = new(file.OpenReadStream()))
+            {
+                while (reader.Peek() > 0)
+                {
+                    string line = reader.ReadLine() ?? "";
+                    TransactionDto transaction = GenerateTransactionFromCsvLine(line);
+                    if (transaction is not null)
+                    {
+                        transactions.Add(transaction);
+                    }
+                }
+            }
+
+            ProcessTransactions(transactions);
+        }
+        catch
+        {
+            throw new ArgumentException("File could not be processed.");
+        }
+    }
+
+    private TransactionDto GenerateTransactionFromCsvLine(string line)
+    {
+        try
+        {
+            string[] values = line.Split(',');
+            DateTime date = DateTime.Parse(values[0] ?? "");
+            string category = values[1];
+            long amount = long.Parse(values[2]);
+
+            string note = "";
+            if (values.Length > 3)
+            {
+                note = values[3];
+            }
+
+            TransactionDto transaction = new()
+            {
+                Date = date,
+                Category = category,
+                Amount = amount,
+                Note = note,
+                WasTakenFromCash = false,
+            };
+
+            return transaction;
+        }
+        catch
+        {
+            return null;
+        }
+    }
+
+    private void ProcessTransactions(IEnumerable<TransactionDto> transactions)
+    {
+        List<Earning> earnings = new();
+        List<Expense> expenses = new();
+
+        foreach (TransactionDto transaction in transactions)
+        {
+            // Ignoring transactions with amount 0 here on purpose.
+
+            if (transaction.Amount < 0)
+            {
+                expenses.Add(transactionConverter.ToExpense(transaction));
+            }
+            if (transaction.Amount > 0)
+            {
+                earnings.Add(transactionConverter.ToEarning(transaction));
+            }
+        }
+        
+        foreach (Earning earning in earnings)
+        {
+            Console.WriteLine(earning.ToString());
+        }
+
+        foreach (Expense expense in expenses)
+        {
+            Console.WriteLine(expense.ToString());
+        }
+
+        earningRepository.RemoveAll();
+        expenseRepository.RemoveAll();
+
+        earningRepository.AddEarnings(earnings);
+        expenseRepository.AddExpenses(expenses);
+
+        earningCategoryRepository.AddCategoriesByEarnings(earnings);
+        expenseCategoryRepository.AddCategoriesByExpenses(expenses);
     }
 }

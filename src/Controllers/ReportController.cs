@@ -52,6 +52,21 @@ public class ReportController : ControllerBase
     }
 
     [HttpPost]
+    [Route("csv")]
+    public IActionResult ProcessCsv(IFormFile file)
+    {
+        try
+        {
+            reportService.ProcessCsv(file);
+            return Ok();
+        }
+        catch
+        {
+            return BadRequest("Something went wrong...");
+        }
+    }
+
+    [HttpPost]
     [Route("debug/populate")]
     public IActionResult PopulateWithTestData()
     {

@@ -88,4 +88,9 @@ public class ExpenseRepository : CrudRepositoryBase, IExpenseRepository
         };
         return expense;
     }
+
+    public void RemoveAll()
+    {
+        
+    }
 }
