@@ -1,39 +1,43 @@
-using BookkeeperRest.Repositories.PasswordRepository;
-using BookkeeperRest.Security.PasswordHasher;
+using BookkeeperRest.New.Repositories;
+using BookkeeperRest.New.Security.PasswordHasher;
 
-namespace BookkeeperRest.Services.PasswordService;
+namespace BookkeeperRest.New.Services;
 
 public class PasswordService : IPasswordService
 {
-    private IPasswordHasher hasher;
-    private IPasswordRepository repository;
+    private readonly IPasswordRepository passwordRepository;
+    private readonly IPasswordHasher passwordHasher;
 
-    public PasswordService(IPasswordHasher hasher, IPasswordRepository repository)
+    public PasswordService(IPasswordRepository passwordRepository)
     {
-        this.hasher = hasher;
-        this.repository = repository;
+        this.passwordRepository = passwordRepository;
+        passwordHasher = new PasswordHasher();
     }
 
-    public bool ChangePassword(string oldPassword, string newPassword)
+    public void ChangePassword(string password)
     {
-        if (DoesPasswordMatch(oldPassword) == false)
+        if (IsPasswordValid(password) == false)
         {
-            return false;
+            throw new ArgumentException();
         }
-        repository.Change(hasher.GenerateHash(newPassword));
-        return true;
+        string hash = passwordHasher.GenerateHash(password);
+        passwordRepository.ChangePassword(hash);
     }
 
     public bool DoesPasswordMatch(string password)
     {
-        string hash = repository.Get();
+        string hash = passwordRepository.GetPassword();
+        return passwordHasher.ValidateHash(password, hash);
+    }
 
-        // If hash is empty, it means no password has been set. Allow all operations in that case.
-        if (hash == "")
+    private bool IsPasswordValid(string password)
+    {
+        // Todo: password validation, is it long enough, uses valid characters etc.
+        // Abstract this out somehow
+        if (password.Length < 8)
         {
-            return true;
+            return false;
         }
-
-        return hasher.ValidateHash(password, hash);
+        return true;
     }
 }

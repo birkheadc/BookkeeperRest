@@ -1,4 +1,4 @@
-namespace BookkeeperRest.Security.PasswordHasher;
+namespace BookkeeperRest.New.Security.PasswordHasher;
 
 public interface IPasswordHasher
 {

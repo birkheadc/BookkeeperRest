@@ -1,8 +1,7 @@
-using BookkeeperRest.Models.Transaction;
-
-namespace BookkeeperRest.Models.Report;
-
+namespace BookkeeperRest.New.Models;
 public record Report
 {
-    public IEnumerable<NewTransactionDTO> ?Transactions { get; init; }
+    public DateTime Date { get; init; }
+    public IEnumerable<Earning> Earnings { get; init; }
+    public IEnumerable<Expense> Expenses { get; init; }
 }

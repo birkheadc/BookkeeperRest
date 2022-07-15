@@ -1,18 +1,17 @@
 using MySql.Data.MySqlClient;
 
-namespace BookkeeperRest.Repositories;
+namespace BookkeeperRest.New.Repositories;
 
 public abstract class CrudRepositoryBase
 {
-    internal string connectionString;
+    protected string connectionString;
 
-    internal readonly string tableName;
-    private readonly string schema;
+    protected readonly string tableName;
+    protected readonly string schema;
 
     public CrudRepositoryBase(IWebHostEnvironment env, IConfiguration configuration, string tableName, string schema)
     {
         // If this connection string does not work the app will simply crash. Eventually I hope to fix that but for now sorry.
-
         if (env.IsDevelopment())
         {
             connectionString = configuration["ConnectionString"];
@@ -90,5 +89,11 @@ public abstract class CrudRepositoryBase
             
             command.ExecuteNonQuery();
         }
+    }
+
+    internal string FormatCategoryName(string name)
+    {
+        string newName = name.Replace(' ', '_').ToLower();
+        return newName;
     }
 }

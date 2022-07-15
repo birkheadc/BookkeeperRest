@@ -1,10 +1,8 @@
-using System;
-using System.Net;
 using System.Text;
 using MailKit.Net.Smtp;
 using MimeKit;
 
-namespace BookkeeperRest.Email;
+namespace BookkeeperRest.New.Email;
 
 public class EmailSender : IEmailSender
 {

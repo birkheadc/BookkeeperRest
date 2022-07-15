@@ -1,75 +1,48 @@
-using BookkeeperRest.Filters;
-using BookkeeperRest.Models;
-using BookkeeperRest.Services;
+using System.ComponentModel.DataAnnotations;
+using BookkeeperRest.New.Models;
+using BookkeeperRest.New.Filters;
+using BookkeeperRest.New.Services;
 using Microsoft.AspNetCore.Mvc;
 
-namespace BookkeeperRest.Controllers;
+namespace BookkeeperRest.New.Controllers;
 
 [ApiController]
-[Route("api/denomination")]
+[Route("api/denomination/break")]
 [PasswordAuth]
 public class DenominationController : ControllerBase
 {
-    private IDenominationService service;
+
+    private readonly IDenominationService denominationService;
 
     public DenominationController(IDenominationService denominationService)
     {
-        this.service = denominationService;
-    }
-
-    [HttpPost]
-    public IActionResult AddOrUpdate([FromBody] Denomination[] denominations)
-    {
-        try
-        {
-            service.Add(denominations);
-            return Ok();
-        }
-        catch
-        {
-            return BadRequest();
-        }
+        this.denominationService = denominationService;
     }
 
     [HttpGet]
-    public IActionResult GetAll()
+    public IActionResult GetAllDenomination()
     {
         try
         {
-            return Ok(service.GetAll());
+            return Ok(denominationService.GetAllDenominations());
         }
         catch
         {
-            return NotFound();
+            return BadRequest("Something went wrong...");
         }
     }
 
-    [HttpDelete]
-    public IActionResult DeleteMultiple([FromBody] IEnumerable<int> values)
+    [HttpPut]
+    public IActionResult UpdateAll([FromBody, Required] IEnumerable<Denomination> denominations)
     {
         try
         {
-            service.RemoveMultiple(values);
+            denominationService.UpdateAllDenominations(denominations);
             return Ok();
         }
         catch
         {
-            return BadRequest();
-        }
-    }
-
-    [HttpDelete]
-    [Route("{value}")]
-    public IActionResult DeleteByValue(int value)
-    {
-        try
-        {
-            service.RemoveByValue(value);
-            return Ok();
-        }
-        catch
-        {
-            return BadRequest();
+            return BadRequest("Something went wrong...");
         }
     }
 }

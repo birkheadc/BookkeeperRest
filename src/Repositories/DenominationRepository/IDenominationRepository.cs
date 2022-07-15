@@ -1,14 +1,10 @@
-using BookkeeperRest.Models;
+using BookkeeperRest.New.Models;
 
-namespace BookkeeperRest.Repositories;
+namespace BookkeeperRest.New.Repositories;
 
 public interface IDenominationRepository
 {
-    public void RemoveAll();
-    public void RemoveMultiple(IEnumerable<int> values);
-    public void RemoveByValue(int value);
-    public void Update(Denomination denomination);
-    public void Add(Denomination denomination);
-    public void Add(IEnumerable<Denomination> denominations);
-    public IEnumerable<Denomination> GetAll();
+    public IEnumerable<Denomination> GetAllDenominations();
+    public void UpdateAll(IEnumerable<Denomination> denominations);
+    public void DeleteByValues(IEnumerable<int> values);
 }

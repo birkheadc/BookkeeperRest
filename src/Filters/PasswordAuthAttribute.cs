@@ -1,8 +1,8 @@
-using BookkeeperRest.Services.PasswordService;
+using BookkeeperRest.New.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 
-namespace BookkeeperRest.Filters;
+namespace BookkeeperRest.New.Filters;
 
 public class PasswordAuthAttribute : Attribute, IAsyncActionFilter
 {

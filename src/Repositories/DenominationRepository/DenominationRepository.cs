@@ -1,181 +1,152 @@
-using BookkeeperRest.Models;
+using BookkeeperRest.New.Models;
 using MySql.Data.MySqlClient;
 
-namespace BookkeeperRest.Repositories;
+namespace BookkeeperRest.New.Repositories;
 
 public class DenominationRepository : CrudRepositoryBase, IDenominationRepository
 {
-    public DenominationRepository(IWebHostEnvironment env, IConfiguration configuration) : base(env, configuration, "denominations", "CREATE TABLE denominations ( value INT DEFAULT 1 NOT NULL PRIMARY KEY, isDefault BOOL DEFAULT 0 NOT NULL)") {}
-
-    public void Add(Denomination denomination)
+    public DenominationRepository(IWebHostEnvironment env, IConfiguration configuration) : base(env, configuration, "denominations", "CREATE TABLE denominations ( value INT DEFAULT 1 NOT NULL PRIMARY KEY, isDefault BOOL DEFAULT 0 NOT NULL)")
     {
-
-        if (DoesExistByValue(denomination.Value) == true)
-        {
-            throw new DuplicateEntryException();
-        }
-
-        using (MySqlConnection connection = GetConnection())
-        {
-            connection.Open();
-
-            MySqlCommand command = new();
-            command.Connection = connection;
-            command.CommandText = "INSERT INTO denominations (value, isDefault) VALUES (@value, @isDefault)";
-
-            command.Parameters.AddWithValue("@value", denomination.Value);
-            int isDefaultInt = denomination.IsDefault ? 1 : 0;
-            command.Parameters.AddWithValue("@isDefault", isDefaultInt);
-            command.ExecuteNonQuery();
-            
-
-            connection.Close();
-        }
+        
     }
 
-    public bool DoesExistByValue(int value)
-    {
-        using (MySqlConnection connection = GetConnection())
-        {
-            connection.Open();
-
-            MySqlCommand command = new();
-            command.Connection = connection;
-            command.CommandText = "SELECT * FROM denominations WHERE value = @value";
-            command.Parameters.AddWithValue("@value", value);
-
-            if (command.ExecuteScalar() == null)
-            {
-                connection.Close();
-                return false;
-            }
-            connection.Close();
-            return true;
-        }
-    }
-
-    public IEnumerable<Denomination> GetAll()
+    public IEnumerable<Denomination> GetAllDenominations()
     {
         List<Denomination> denominations = new();
 
         using (MySqlConnection connection = GetConnection())
         {
             connection.Open();
-
+            
             MySqlCommand command = new();
             command.Connection = connection;
-            command.CommandText = "SELECT * FROM denominations";
+            command.CommandText = "SELECT * FROM " + tableName;
 
             using (MySqlDataReader reader = command.ExecuteReader())
             {
                 while (reader.Read())
                 {
-                    Denomination denomination = GetDenominationFromReaderLine(reader);
+                    Denomination denomination = GetDenominationFromReader(reader);
                     denominations.Add(denomination);
                 }
             }
-
+            
             connection.Close();
         }
 
         return denominations;
     }
 
-    private Denomination GetDenominationFromReaderLine(MySqlDataReader reader)
+    public void UpdateAll(IEnumerable<Denomination> denominations)
+    {
+        DeleteAll();
+        foreach (Denomination denomination in denominations)
+        {
+            if (DoesDenominationExist(denomination) == true)
+            {
+                UpdateDenomination(denomination);
+            }
+            else
+            {
+                InsertDenomination(denomination);
+            }
+        }
+    }
+
+    private void DeleteAll()
+    {
+        using (MySqlConnection connection = GetConnection())
+        {
+            connection.Open();
+            
+            MySqlCommand command = new();
+            command.Connection = connection;
+            command.CommandText = "DELETE FROM " + tableName;
+            command.ExecuteNonQuery();
+            
+            connection.Close();
+        }
+    }
+
+    public void DeleteByValues(IEnumerable<int> values)
+    {
+        foreach (int value in values)
+        {
+            using (MySqlConnection connection = GetConnection())
+            {
+                connection.Open();
+                
+                MySqlCommand command = new();
+                command.Connection = connection;
+                command.CommandText = "DELETE FROM " + tableName + " WHERE value = @value";
+                command.Parameters.AddWithValue("@value", value);
+                command.ExecuteNonQuery();
+                
+                connection.Close();
+            }
+        }
+    }
+
+    private void InsertDenomination(Denomination denomination)
+    {
+        using (MySqlConnection connection = GetConnection())
+        {
+            connection.Open();
+            
+            MySqlCommand command = new();
+            command.Connection = connection;
+            command.CommandText = "INSERT INTO " + tableName + " (value, isDefault) VALUES (@value, @isDefault)";
+            command.Parameters.AddWithValue("@value", denomination.Value);
+            command.Parameters.AddWithValue("@isDefault", denomination.IsDefault ? 1 : 0);
+            command.ExecuteNonQuery();
+            
+            connection.Close();
+        }
+    }
+
+    private void UpdateDenomination(Denomination denomination)
+    {
+        using (MySqlConnection connection = GetConnection())
+        {
+            connection.Open();
+            
+            MySqlCommand command = new();
+            command.Connection = connection;
+            command.CommandText = "UPDATE " + tableName + " SET isDefault = @isDefault WHERE value = @value";
+            command.Parameters.AddWithValue("@value", denomination.Value);
+            command.Parameters.AddWithValue("@isDefault", denomination.IsDefault ? 1 : 0);
+            command.ExecuteNonQuery();
+            
+            connection.Close();
+        }
+    }
+
+    private bool DoesDenominationExist(Denomination denomination)
+    {
+        using (MySqlConnection connection = GetConnection())
+        {
+            connection.Open();
+            
+            MySqlCommand command = new();
+            command.Connection = connection;
+            command.CommandText = "SELECT COUNT(*) FROM " + tableName + " WHERE value = @value";
+            command.Parameters.AddWithValue("@value", denomination.Value);
+
+            int n = GetCountFromScalarCommand(command);
+            
+            connection.Close();
+
+            return n > 0;
+        }
+    }
+
+    private Denomination GetDenominationFromReader(MySqlDataReader reader)
     {
         Denomination denomination = new()
         {
-            Value = Int32.Parse(reader["value"].ToString() ?? "1"),
+            Value = int.Parse(reader["value"].ToString() ?? "0"),
             IsDefault = Boolean.Parse(reader["isDefault"].ToString() ?? "false")
         };
-
         return denomination;
-    }
-
-    public void RemoveMultiple(IEnumerable<int> values)
-    {
-        using (MySqlConnection connection = GetConnection())
-        {
-            connection.Open();
-
-            foreach (int value in values)
-            {
-                MySqlCommand command = new();
-                command.Connection = connection;
-                command.CommandText = "DELETE FROM denominations WHERE value = @value";
-                command.Parameters.AddWithValue("@value", value);
-                command.ExecuteNonQuery();
-            }
-
-            connection.Close();
-        }
-    }
-
-    public void RemoveAll()
-    {
-        throw new NotImplementedException();
-    }
-
-    public void RemoveByValue(int value)
-    {
-        using (MySqlConnection connection = GetConnection())
-        {
-            connection.Open();
-
-            MySqlCommand command = new();
-            command.Connection = connection;
-            command.CommandText = "DELETE FROM denominations WHERE value = @value";
-            command.Parameters.AddWithValue("@value", value);
-
-            command.ExecuteNonQuery();
-
-            connection.Close();
-        }   
-    }
-
-    public void Update(Denomination denomination)
-    {
-        using (MySqlConnection connection = GetConnection())
-        {
-            connection.Open();
-
-            MySqlCommand command = new();
-            command.Connection = connection;
-            command.CommandText = "UPDATE denominations SET isDefault = @isDefault WHERE value = @value";
-            int isDefaultInt = denomination.IsDefault ? 1 : 0;
-            command.Parameters.AddWithValue("@value", denomination.Value);
-            command.Parameters.AddWithValue("@isDefault", isDefaultInt);
-
-            command.ExecuteNonQuery();
-
-            connection.Close();
-        }
-    }
-
-    public void Add(IEnumerable<Denomination> denominations)
-    {
-        using (MySqlConnection connection = GetConnection())
-        {
-            connection.Open();
-
-            foreach(Denomination denomination in denominations) {
-                if (DoesExistByValue(denomination.Value) == true)
-                {
-                    Update(denomination);
-                    continue;
-                }
-
-                MySqlCommand command = new();
-                command.Connection = connection;
-                command.CommandText = "INSERT INTO denominations (value, isDefault) VALUES (@value, @isDefault)";
-
-                command.Parameters.AddWithValue("@value", denomination.Value);
-                int isDefaultInt = denomination.IsDefault ? 1 : 0;
-                command.Parameters.AddWithValue("@isDefault", isDefaultInt);
-                command.ExecuteNonQuery();
-            }        
-
-            connection.Close();
-        }
     }
 }

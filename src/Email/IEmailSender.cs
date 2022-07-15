@@ -1,4 +1,4 @@
-namespace BookkeeperRest.Email;
+namespace BookkeeperRest.New.Email;
 
 public interface IEmailSender
 {

@@ -1,59 +1,30 @@
-using BookkeeperRest.Models;
-using BookkeeperRest.Repositories;
+using BookkeeperRest.New.Models;
+using BookkeeperRest.New.Repositories;
 
-namespace BookkeeperRest.Services;
+namespace BookkeeperRest.New.Services;
 
 public class DenominationService : IDenominationService
 {
-    private IDenominationRepository repository;
 
-    public DenominationService(IDenominationRepository repository)
+    private readonly IDenominationRepository denominationRepository;
+
+    public DenominationService(IDenominationRepository denominationRepository)
     {
-        this.repository = repository;
+        this.denominationRepository = denominationRepository;
     }
 
-    public void Add(int value, bool isDefault = false)
+    public void DeleteByValues(IEnumerable<int> values)
     {
-        Denomination denomination = new()
-        {
-            Value = value,
-            IsDefault = isDefault
-        };
-        Add(denomination);
+        denominationRepository.DeleteByValues(values);
     }
 
-    public void Add(Denomination denomination)
+    public IEnumerable<Denomination> GetAllDenominations()
     {
-        repository.Add(denomination);
+        return denominationRepository.GetAllDenominations();
     }
 
-    public void Add(IEnumerable<Denomination> denominations)
+    public void UpdateAllDenominations(IEnumerable<Denomination> denominations)
     {
-        repository.Add(denominations);
-    }
-
-    public IEnumerable<Denomination> GetAll()
-    {
-        return repository.GetAll();
-    }
-
-    public void RemoveMultiple(IEnumerable<int> values)
-    {
-        repository.RemoveMultiple(values);
-    }
-
-    public void RemoveAll()
-    {
-        repository.RemoveAll();
-    }
-
-    public void RemoveByValue(int value)
-    {
-        repository.RemoveByValue(value);
-    }
-
-    public void Update(Denomination denomination)
-    {
-        repository.Update(denomination);
+        denominationRepository.UpdateAll(denominations);
     }
 }

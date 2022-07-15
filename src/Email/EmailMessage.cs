@@ -1,6 +1,6 @@
 using MimeKit;
 
-namespace BookkeeperRest.Email;
+namespace BookkeeperRest.New.Email;
 
 public class EmailMessage
 {

@@ -1,7 +1,7 @@
-namespace BookkeeperRest.Services.PasswordService;
+namespace BookkeeperRest.New.Services;
 
 public interface IPasswordService
 {
-    public bool ChangePassword(string oldPassword, string newPassword);
     public bool DoesPasswordMatch(string password);
+    public void ChangePassword(string password);
 }

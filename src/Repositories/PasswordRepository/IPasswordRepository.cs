@@ -1,7 +1,7 @@
-namespace BookkeeperRest.Repositories.PasswordRepository;
+namespace BookkeeperRest.New.Repositories;
 
 public interface IPasswordRepository
 {
-    public void Change(string newHashedPassword);
-    public string Get();
+    public string GetPassword();
+    public void ChangePassword(string password);
 }

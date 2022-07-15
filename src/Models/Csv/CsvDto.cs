@@ -1,4 +1,4 @@
-namespace BookkeeperREst.Models.Csv;
+namespace BookkeeperRest.New.Models;
 
 public record CsvDto
 {

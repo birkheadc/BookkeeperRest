@@ -1,51 +1,49 @@
+using System.ComponentModel.DataAnnotations;
 using System.Text.Json;
-using BookkeeperRest.Filters;
-using BookkeeperRest.Services.PasswordService;
+using BookkeeperRest.New.Filters;
+using BookkeeperRest.New.Services;
 using Microsoft.AspNetCore.Mvc;
-using Org.BouncyCastle.OpenSsl;
 
-namespace BookkeeperRest.Controllers;
+namespace BookkeeperRest.New.Controllers;
 
 [ApiController]
 [Route("api/password")]
 [PasswordAuth]
 public class PasswordController : ControllerBase
 {
-    private IPasswordService service;
+    private IPasswordService passwordService;
 
-    public PasswordController(IPasswordService service)
+    public PasswordController(IPasswordService passwordService)
     {
-        this.service = service;
+        this.passwordService = passwordService;
     }
 
     [HttpPost]
-    public IActionResult ChangePassword([FromBody] JsonElement element)
+    public IActionResult ChangePassword([FromBody] JsonElement json)
     {
-        if (!element.TryGetProperty("old", out var oldElement) || !element.TryGetProperty("new", out var newElement))
+        try
         {
-            return BadRequest();
-        }
-
-        string oldPassword = oldElement.GetString() ?? "";
-        string newPassword = newElement.GetString() ?? "";
-
-        if (string.IsNullOrWhiteSpace(newPassword))
-        {
-            return BadRequest();
-        }
-
-        if (service.ChangePassword(oldPassword, newPassword))
-        {
+            if (!json.TryGetProperty("password", out var password))
+            {
+                return BadRequest("`password` field is required.");
+            }
+            passwordService.ChangePassword(password.ToString());
             return Ok();
-        }      
-
-        return Forbid();
+        }
+        catch (ArgumentException e)
+        {
+            return BadRequest("Password is not valid!");
+        }
+        catch
+        {
+            return BadRequest("Something went wrong...");
+        }
     }
 
     [HttpPost]
     [Route("verify")]
     public IActionResult VerifyPassword()
     {
-        return Ok();    
+        return Ok();
     }
 }
