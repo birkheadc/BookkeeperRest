@@ -8,7 +8,7 @@ public class TransactionConverter
         {
             Id = Guid.NewGuid(),
             Category = dto.Category,
-            Amount = dto.Amount,
+            Amount = Math.Abs(dto.Amount),
             Date = dto.Date
         };
         return earning;
@@ -20,7 +20,7 @@ public class TransactionConverter
         {
             Id = Guid.NewGuid(),
             Category = dto.Category,
-            Amount = dto.Amount,
+            Amount = Math.Abs(dto.Amount),
             Date = dto.Date,
             Note = dto.Note,
             WasTakenFromCash = dto.WasTakenFromCash

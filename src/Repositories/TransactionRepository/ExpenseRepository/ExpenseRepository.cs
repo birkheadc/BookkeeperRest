@@ -16,17 +16,20 @@ public class ExpenseRepository : CrudRepositoryBase, IExpenseRepository
             connection.Open();
             foreach (Expense expense in expenses)
             {
-                MySqlCommand command = new();
-                command.Connection = connection;
-                command.CommandText = "INSERT INTO " + tableName + " (id, date, category, amount, note, wasTakenFromCash) VALUES (@id, @date, @category, @amount, @note, @wasTakenFromCash)";
-                command.Parameters.AddWithValue("@id", expense.Id);
-                command.Parameters.AddWithValue("@date", expense.Date.ToString("yyyy-MM-dd"));
-                command.Parameters.AddWithValue("@category", FormatCategoryName(expense.Category));
-                command.Parameters.AddWithValue("@amount", expense.Amount >= 0 ? expense.Amount : 0); 
-                command.Parameters.AddWithValue("@note", expense.Note);
-                command.Parameters.AddWithValue("@wasTakenFromCash", expense.WasTakenFromCash ? 1 : 0);
+                if (expense.Amount != 0)
+                {
+                    MySqlCommand command = new();
+                    command.Connection = connection;
+                    command.CommandText = "INSERT INTO " + tableName + " (id, date, category, amount, note, wasTakenFromCash) VALUES (@id, @date, @category, @amount, @note, @wasTakenFromCash)";
+                    command.Parameters.AddWithValue("@id", expense.Id);
+                    command.Parameters.AddWithValue("@date", expense.Date.ToString("yyyy-MM-dd"));
+                    command.Parameters.AddWithValue("@category", FormatCategoryName(expense.Category));
+                    command.Parameters.AddWithValue("@amount", expense.Amount >= 0 ? expense.Amount : 0); 
+                    command.Parameters.AddWithValue("@note", expense.Note);
+                    command.Parameters.AddWithValue("@wasTakenFromCash", expense.WasTakenFromCash ? 1 : 0);
 
-                command.ExecuteNonQuery();
+                    command.ExecuteNonQuery();
+                }
             }
             connection.Close();
         }
@@ -91,6 +94,16 @@ public class ExpenseRepository : CrudRepositoryBase, IExpenseRepository
 
     public void RemoveAll()
     {
-        
+        using (MySqlConnection connection = GetConnection())
+        {
+            connection.Open();
+            
+            MySqlCommand command = new();
+            command.Connection = connection;
+            command.CommandText = "DELETE FROM " + tableName;
+            command.ExecuteNonQuery();
+            
+            connection.Close();
+        }
     }
 }

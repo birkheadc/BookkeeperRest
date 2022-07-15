@@ -263,6 +263,11 @@ public class ReportService : IReportService
             {
                 note = values[3];
             }
+            bool wasTakenFromCash = false;
+            if (values.Length > 4)
+            {
+                wasTakenFromCash = bool.Parse(values[4]);
+            }
 
             TransactionDto transaction = new()
             {
@@ -270,7 +275,7 @@ public class ReportService : IReportService
                 Category = category,
                 Amount = amount,
                 Note = note,
-                WasTakenFromCash = false,
+                WasTakenFromCash = wasTakenFromCash,
             };
 
             return transaction;
@@ -298,16 +303,6 @@ public class ReportService : IReportService
             {
                 earnings.Add(transactionConverter.ToEarning(transaction));
             }
-        }
-        
-        foreach (Earning earning in earnings)
-        {
-            Console.WriteLine(earning.ToString());
-        }
-
-        foreach (Expense expense in expenses)
-        {
-            Console.WriteLine(expense.ToString());
         }
 
         earningRepository.RemoveAll();

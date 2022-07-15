@@ -16,15 +16,18 @@ public class EarningRepository : CrudRepositoryBase, IEarningRepository
             connection.Open();
             foreach (Earning earning in earnings)
             {
-                MySqlCommand command = new();
-                command.Connection = connection;
-                command.CommandText = "INSERT INTO " + tableName + " (id, date, category, amount) VALUES (@id, @date, @category, @amount)";
-                command.Parameters.AddWithValue("@id", earning.Id);
-                command.Parameters.AddWithValue("@date", earning.Date.ToString("yyyy-MM-dd"));
-                command.Parameters.AddWithValue("@category", FormatCategoryName(earning.Category));
-                command.Parameters.AddWithValue("@amount", earning.Amount >= 0 ? earning.Amount : 0);
+                if (earning.Amount != 0)
+                {
+                    MySqlCommand command = new();
+                    command.Connection = connection;
+                    command.CommandText = "INSERT INTO " + tableName + " (id, date, category, amount) VALUES (@id, @date, @category, @amount)";
+                    command.Parameters.AddWithValue("@id", earning.Id);
+                    command.Parameters.AddWithValue("@date", earning.Date.ToString("yyyy-MM-dd"));
+                    command.Parameters.AddWithValue("@category", FormatCategoryName(earning.Category));
+                    command.Parameters.AddWithValue("@amount", earning.Amount >= 0 ? earning.Amount : 0);
 
-                command.ExecuteNonQuery();
+                    command.ExecuteNonQuery();
+                }
             }
             connection.Close();
         }
@@ -87,6 +90,16 @@ public class EarningRepository : CrudRepositoryBase, IEarningRepository
 
     public void RemoveAll()
     {
-        
+        using (MySqlConnection connection = GetConnection())
+        {
+            connection.Open();
+            
+            MySqlCommand command = new();
+            command.Connection = connection;
+            command.CommandText = "DELETE FROM " + tableName;
+            command.ExecuteNonQuery();
+            
+            connection.Close();
+        }
     }
 }
