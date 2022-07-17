@@ -9,6 +9,6 @@ public record Earning
 
     public override string ToString()
     {
-        return "Earning Id=" + Id + " Category=" + Category + " Amount=" + Amount + " Date=" + Date.ToShortDateString();
+        return Date.ToShortDateString() + "," + Category + "," + Amount.ToString();
     }
 }

@@ -1,4 +1,5 @@
 using System.Text;
+using BookkeeperRest.New.Email;
 using BookkeeperRest.New.Models;
 using BookkeeperRest.New.Repositories;
 
@@ -16,8 +17,15 @@ public class ReportService : IReportService
     private readonly EarningConverter earningConverter;
     private readonly ExpenseConverter expenseConverter;
     private readonly TransactionConverter transactionConverter;
+    private readonly IEmailSender emailSender;
 
-    public ReportService(IExpenseRepository expenseRepository, IEarningRepository earningRepository, IDenominationRepository denominationRepository, IExpenseCategoryRepository expenseCategoryRepository, IEarningCategoryRepository earningCategoryRepository, IUserSettingRepository userSettingRepository)
+    public ReportService(IExpenseRepository expenseRepository,
+                         IEarningRepository earningRepository,
+                         IDenominationRepository denominationRepository,
+                         IExpenseCategoryRepository expenseCategoryRepository,
+                         IEarningCategoryRepository earningCategoryRepository,
+                         IUserSettingRepository userSettingRepository,
+                         IEmailSender emailSender)
     {
         this.expenseRepository = expenseRepository;
         this.earningRepository = earningRepository;
@@ -25,6 +33,8 @@ public class ReportService : IReportService
         this.expenseCategoryRepository = expenseCategoryRepository;
         this.earningCategoryRepository = earningCategoryRepository;
         this.userSettingRepository = userSettingRepository;
+
+        this.emailSender = emailSender;
 
         this.earningConverter = new();
         this.expenseConverter = new();
@@ -45,6 +55,8 @@ public class ReportService : IReportService
 
         earningCategoryRepository.AddCategoriesByEarnings(earnings);
         expenseCategoryRepository.AddCategoriesByExpenses(expenses);
+
+        SendFullBackupViaEmail();
     }
 
     public ReportsWrapper GenerateReportForDates(IEnumerable<DateTime> dates)
@@ -242,6 +254,7 @@ public class ReportService : IReportService
             }
 
             ProcessTransactions(transactions);
+            SendFullBackupViaEmail();
         }
         catch
         {
@@ -313,5 +326,49 @@ public class ReportService : IReportService
 
         earningCategoryRepository.AddCategoriesByEarnings(earnings);
         expenseCategoryRepository.AddCategoriesByExpenses(expenses);
+    }
+
+    private void SendFullBackupViaEmail()
+    {
+        string emailName = userSettingRepository.GetValueByName("emailName") ?? "name_not_found";
+        string emailAddress = userSettingRepository.GetValueByName("emailAddress") ?? "";
+
+        if (emailAddress is null || emailAddress == "")
+        {
+            Console.WriteLine("Failed to send email, email address not found.");
+        }
+
+        Console.WriteLine("Send email backup to '" + emailName + "' at '" + emailAddress + "'.");
+
+        SimpleTextAttachment attachment = new()
+        {
+            FileName = "BookKeeperBackup_" + DateTime.Now.ToString() + ".csv",
+            Content = GenerateCsvForAllTransactions()
+        };
+
+        EmailMessage message = new(emailName, emailAddress, "Bookkeeper Updated", "Attached is a back-up of all transactions.", attachment);
+        emailSender.SendEmailAsync(message);
+    }
+
+    private string GenerateCsvForAllTransactions()
+    {
+        List<Earning> earnings = new();
+        earnings.AddRange(earningRepository.GetAll());
+
+        List<Expense> expenses = new();
+        expenses.AddRange(expenseRepository.GetAll());
+
+        StringBuilder sb = new();
+
+        foreach (Earning earning in earnings)
+        {
+            sb.Append(earning.ToString() + "\n");
+        }
+        foreach (Expense expense in expenses)
+        {
+            sb.Append(expense.ToString() + "\n");
+        }
+
+        return sb.ToString();
     }
 }

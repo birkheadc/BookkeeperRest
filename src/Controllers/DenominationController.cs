@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace BookkeeperRest.New.Controllers;
 
+// I don't think this controller is necessary any longer, consider removing.
+
 [ApiController]
 [Route("api/denomination/break")]
 [PasswordAuth]

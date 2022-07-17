@@ -102,4 +102,29 @@ public class EarningRepository : CrudRepositoryBase, IEarningRepository
             connection.Close();
         }
     }
+    
+    public IEnumerable<Earning> GetAll() 
+    {
+        List<Earning> earnings = new();
+        using (MySqlConnection connection = GetConnection())
+        {
+            connection.Open();
+            
+            MySqlCommand command = new();
+            command.Connection = connection;
+            command.CommandText = "SELECT * FROM " + tableName + " ORDER BY date DESC";
+
+            using (MySqlDataReader reader = command.ExecuteReader())
+            {
+                while (reader.Read())
+                {
+                    Earning earning = GetEarningFromReader(reader);
+                    earnings.Add(earning);
+                }
+            }
+            
+            connection.Close();
+        }
+        return earnings;
+    }
 }

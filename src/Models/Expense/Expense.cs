@@ -11,6 +11,6 @@ public record Expense
 
     public override string ToString()
     {
-        return "Expense Id=" + Id + " Category=" + Category + " Amount=" + Amount + " Date=" + Date.ToShortDateString() + " Note=" + Note + " Was Taken From Cash=" + WasTakenFromCash;
+        return Date.ToShortDateString() + "," + Category + "," + (Amount * -1).ToString() + "," + Note + "," + WasTakenFromCash.ToString();
     }
 }

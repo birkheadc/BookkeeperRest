@@ -106,4 +106,29 @@ public class ExpenseRepository : CrudRepositoryBase, IExpenseRepository
             connection.Close();
         }
     }
+
+    public IEnumerable<Expense> GetAll()
+    {
+        List<Expense> expenses = new();
+        using (MySqlConnection connection = GetConnection())
+        {
+            connection.Open();
+            
+            MySqlCommand command = new();
+            command.Connection = connection;
+            command.CommandText = "SELECT * FROM " + tableName + " ORDER BY date DESC";
+
+            using (MySqlDataReader reader = command.ExecuteReader())
+            {
+                while (reader.Read())
+                {
+                    Expense expense = GetExpenseFromReader(reader);
+                    expenses.Add(expense);
+                }
+            }
+            
+            connection.Close();
+        }
+        return expenses;
+    }
 }
