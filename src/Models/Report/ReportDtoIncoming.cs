@@ -4,4 +4,5 @@ public record ReportDtoIncoming
     public DateTime Date { get; init; }
     public IEnumerable<EarningDtoIncoming> Earnings { get; init; }
     public IEnumerable<ExpenseDtoIncoming> Expenses { get; init; }
+    public IEnumerable<Denomination> Denominations { get; init; }
 }

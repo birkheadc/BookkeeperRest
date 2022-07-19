@@ -56,6 +56,8 @@ public class ReportService : IReportService
         earningCategoryRepository.AddCategoriesByEarnings(earnings);
         expenseCategoryRepository.AddCategoriesByExpenses(expenses);
 
+        denominationRepository.UpdateAll(report.Denominations);
+
         SendFullBackupViaEmail();
     }
 
