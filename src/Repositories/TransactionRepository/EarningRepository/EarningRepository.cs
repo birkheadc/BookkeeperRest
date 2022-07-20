@@ -59,7 +59,7 @@ public class EarningRepository : CrudRepositoryBase, IEarningRepository
             
             MySqlCommand command = new();
             command.Connection = connection;
-            command.CommandText = "SELECT * FROM " + tableName + " WHERE date = @date";
+            command.CommandText = "SELECT * FROM " + tableName + " WHERE date = @date ORDER BY category";
             command.Parameters.AddWithValue("@date", date.ToString("yyyy-MM-dd"));
 
             using (MySqlDataReader reader = command.ExecuteReader())

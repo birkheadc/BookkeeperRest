@@ -43,7 +43,7 @@ public class ExpenseRepository : CrudRepositoryBase, IExpenseRepository
 
             MySqlCommand command = new();
             command.Connection = connection;
-            command.CommandText = "DELETE FROM " + tableName + " WHERE date = @date";
+            command.CommandText = "DELETE FROM " + tableName + " WHERE date = @date ORDER BY category";
             command.Parameters.AddWithValue("@date", date.ToString("yyyy-MM-dd"));
 
             command.ExecuteNonQuery();
