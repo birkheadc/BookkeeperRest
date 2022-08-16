@@ -16,3 +16,5 @@ The following environment variables must be established for the application to r
 - `ASPNETCORE_CONNECTIONSTRING`: The connection string for the application to connect to the database.
 
 In Development, `dotnet user-secrets set key value` should be sufficient. In production, these should be passed to the Dockerfile via arguments in the docker-compose.yml.
+
+For copy-pasting: `dotnet user-secrets set ASPNETCORE_EMAILCONFIG_`
