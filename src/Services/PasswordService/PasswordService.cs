@@ -16,12 +16,22 @@ public class PasswordService : IPasswordService
 
     public void ChangePassword(string password)
     {
+        if (IsPasswordChangeEnabled() == false)
+        {
+            return;
+        }
         if (IsPasswordValid(password) == false)
         {
             throw new ArgumentException();
         }
         string hash = passwordHasher.GenerateHash(password);
         passwordRepository.ChangePassword(hash);
+    }
+
+    private bool IsPasswordChangeEnabled()
+    {
+        string s = Environment.GetEnvironmentVariable("ASPNETCORE_ENABLE_PASSWORD_CHANGE") ?? "true";
+        return (s == "true");
     }
 
     public bool DoesPasswordMatch(string password)

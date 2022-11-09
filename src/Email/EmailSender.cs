@@ -13,8 +13,18 @@ public class EmailSender : IEmailSender
         this.emailConfig = emailConfig;
     }
 
+    private bool IsEmailEnabled()
+    {
+      string s = Environment.GetEnvironmentVariable("ASPNETCORE_IS_DEMO") ?? "true";
+      return (s == "false");
+    }
+
     public void SendEmail(EmailMessage message)
     {
+        if (IsEmailEnabled() == false)
+        {
+          return;
+        }
         MimeMessage mimeMessage = CreateMimeMessage(message);
         Send(mimeMessage);
     }
@@ -75,6 +85,10 @@ public class EmailSender : IEmailSender
 
     public async Task SendEmailAsync(EmailMessage message)
     {
+        if (IsEmailEnabled() == false)
+        {
+            return;
+        }
         MimeMessage mimeMessage = CreateMimeMessage(message);
         await SendAsync(mimeMessage);
     }
