@@ -30,11 +30,11 @@ public class PasswordController : ControllerBase
             passwordService.ChangePassword(password.ToString());
             return Ok();
         }
-        catch (ArgumentException e)
+        catch (ArgumentException)
         {
             return BadRequest("Password is not valid!");
         }
-        catch
+        catch (Exception)
         {
             return BadRequest("Something went wrong...");
         }
