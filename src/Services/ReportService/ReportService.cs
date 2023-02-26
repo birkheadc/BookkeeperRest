@@ -116,7 +116,7 @@ public class ReportService : IReportService
 
         foreach (Report report in reports)
         {
-            if (report.Earnings.Count() > 0 || report.Expenses.Count() > 0)
+            if (report.Earnings.Count() > 0 || report.Expenses.Count() > 0 || report.Date < DateTime.Today)
             {
                 numDays++;
                 foreach (Earning earning in report.Earnings)
