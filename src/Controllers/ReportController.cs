@@ -67,6 +67,21 @@ public class ReportController : ControllerBase
     }
 
     [HttpPost]
+    [Route("mass-report")]
+    public IActionResult MassReport([FromBody] MassReport report)
+    {
+      try
+      {
+        reportService.ProcessMassReport(report);
+        return Ok();
+      }
+      catch
+      {
+        return BadRequest("Something went wrong...");
+      }
+    }
+
+    [HttpPost]
     [Route("debug/populate")]
     public IActionResult PopulateWithTestData()
     {

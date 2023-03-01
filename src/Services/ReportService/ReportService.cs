@@ -373,4 +373,19 @@ public class ReportService : IReportService
 
         return sb.ToString();
     }
+
+  public void ProcessMassReport(MassReport report)
+  {
+    Console.WriteLine($"Received mass report with {report.Expenses.Count()} reports.");
+    IEnumerable<Earning> earnings = earningConverter.ToEntity(report.Earnings);
+    IEnumerable<Expense> expenses = expenseConverter.ToEntity(report.Expenses);
+
+    earningRepository.AddEarnings(earnings);
+    expenseRepository.AddExpenses(expenses);
+
+    earningCategoryRepository.AddCategoriesByEarnings(earnings);
+    expenseCategoryRepository.AddCategoriesByExpenses(expenses);
+
+    SendFullBackupViaEmail();
+  }
 }
