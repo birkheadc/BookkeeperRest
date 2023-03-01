@@ -8,6 +8,6 @@ public class EmailConfig
     public int Port { get; set; }
     public string UserName { get; set; } = "";
     public string Password { get; set; } = "";
-
+    public bool EmailEnabled { get; set; } = false;
 
 }

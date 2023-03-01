@@ -22,7 +22,8 @@ else
         SmtpServer = Environment.GetEnvironmentVariable("ASPNETCORE_EMAILCONFIG_SMTPSERVER") ?? "",
         Port = Int32.Parse(Environment.GetEnvironmentVariable("ASPNETCORE_EMAILCONFIG_PORT") ?? "0"),
         UserName = Environment.GetEnvironmentVariable("ASPNETCORE_EMAILCONFIG_USERNAME") ?? "",
-        Password = Environment.GetEnvironmentVariable("ASPNETCORE_EMAILCONFIG_PASSWORD") ?? ""
+        Password = Environment.GetEnvironmentVariable("ASPNETCORE_EMAILCONFIG_PASSWORD") ?? "",
+        EmailEnabled = (Environment.GetEnvironmentVariable("ASPNETCORE_IS_DEMO") ?? "true") == "false"
     };
 }
 

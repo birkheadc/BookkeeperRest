@@ -13,15 +13,9 @@ public class EmailSender : IEmailSender
         this.emailConfig = emailConfig;
     }
 
-    private bool IsEmailEnabled()
-    {
-      string s = Environment.GetEnvironmentVariable("ASPNETCORE_IS_DEMO") ?? "true";
-      return (s == "false");
-    }
-
     public void SendEmail(EmailMessage message)
     {
-        if (IsEmailEnabled() == false)
+        if (emailConfig.EmailEnabled == false)
         {
           return;
         }
@@ -85,8 +79,9 @@ public class EmailSender : IEmailSender
 
     public async Task SendEmailAsync(EmailMessage message)
     {
-        if (IsEmailEnabled() == false)
+        if (emailConfig.EmailEnabled == false)
         {
+            Console.WriteLine("Email is disabled. Aborting.");
             return;
         }
         MimeMessage mimeMessage = CreateMimeMessage(message);
