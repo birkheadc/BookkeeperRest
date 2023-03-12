@@ -3,6 +3,9 @@ using BookkeeperRest.New.Email;
 using BookkeeperRest.New.Repositories;
 using BookkeeperRest.New.Services;
 
+Console.WriteLine("Starting Bookkeeper Rest API.");
+Console.WriteLine("Demo mode is: " + Environment.GetEnvironmentVariable("ASPNETCORE_IS_DEMO"));
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.

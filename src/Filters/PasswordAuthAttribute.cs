@@ -8,6 +8,12 @@ public class PasswordAuthAttribute : Attribute, IAsyncActionFilter
 {
     public async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
     {
+        // Allow access if demo mode - no password required for demo
+        if ((Environment.GetEnvironmentVariable("ASPNETCORE_IS_DEMO") ?? "false") == "true")
+        {
+          await next();
+        }
+
         // Refuse access if no password is included in request.
         if (!context.HttpContext.Request.Headers.TryGetValue("Authorization", out var password))
         {
