@@ -388,4 +388,17 @@ public class ReportService : IReportService
 
     SendFullBackupViaEmail();
   }
+
+  public SpecialBreakdowns GenerateSpecialBreakdownsForDatesBetween(DateTime startDate, DateTime endDate)
+  {
+    // Todo: There is probably a better way to do this kind of query on a database
+    SpecialBreakdownBuilder builder = new();
+    IEnumerable<DateTime> dates = GetDatesBetween(startDate, endDate);
+    foreach (DateTime date in dates)
+    {
+      builder.AddEarnings(earningRepository.GetEarningsByDate(date));
+      builder.AddExpenses(expenseRepository.GetExpensesByDate(date));
+    }
+    return builder.Build();
+  }
 }

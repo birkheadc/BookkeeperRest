@@ -37,6 +37,24 @@ public class ReportController : ControllerBase
         }
     }
 
+    [HttpGet]
+    [Route("breakdowns")]
+    public IActionResult GetBreakdowns([FromQuery(Name = "startDate"), Required] DateTime startDate, [FromQuery(Name = "endDate"), Required] DateTime endDate)
+    {
+        if (endDate < startDate) {
+            return BadRequest("End Date must be the same as or after the Start Date!");
+        }
+        try
+        {
+            SpecialBreakdowns breakdowns = reportService.GenerateSpecialBreakdownsForDatesBetween(startDate, endDate);
+            return Ok(breakdowns);
+        }
+        catch
+        {
+            return BadRequest("Something went wrong...");
+        }
+    }
+
     [HttpPut]
     public IActionResult AddOrUpdateReport([FromBody, Required] ReportDtoIncoming reportDtoIncoming)
     {
